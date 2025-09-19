@@ -1,0 +1,95 @@
+name: Auto update README index
+
+on:
+  push:
+    branches: [ "main" ]   # 기본 브랜치가 main이 아니라면 수정
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate index markdown
+        id: gen
+        run: |
+          set -e
+
+          # 수집 함수: 경로에서 파일명만 뽑아 링크 라인으로 변환
+          list_md () {
+            base="$1"
+            if [ -d "$base" ]; then
+              # .c 파일만, 경로 기준 정렬
+              find "$base" -type f -name '*.c' | sort | while read -r f; do
+                name="$(basename "$f")"
+                echo "- [$name]($f)"
+              done
+            fi
+          }
+
+          # 섹션별 헤더 + 리스트 생성
+          BAEKJOON_LIST="$(list_md baekjoon)"
+          PROGRAMMERS_LIST="$(list_md programmers)"
+
+          # 비어있을 때의 대체 문구
+          [ -z "$BAEKJOON_LIST" ] && BAEKJOON_LIST="- (아직 없음)"
+          [ -z "$PROGRAMMERS_LIST" ] && PROGRAMMERS_LIST="- (아직 없음)"
+
+          # 최종 블록
+          {
+            echo "## Baekjoon"
+            echo "$BAEKJOON_LIST"
+            echo
+            echo "## Programmers"
+            echo "$PROGRAMMERS_LIST"
+          } > _AUTO_INDEX.md
+
+          echo "Generated _AUTO_INDEX.md:"
+          cat _AUTO_INDEX.md
+
+      - name: Update README between markers
+        run: |
+          set -e
+          START="<!-- AUTO-INDEX:START -->"
+          END="<!-- AUTO-INDEX:END -->"
+
+          # 안전장치: README가 없으면 새로 생성
+          if [ ! -f README.md ]; then
+            echo -e "# C Algorithm Study\n\n$START\n\n$END" > README.md
+          fi
+
+          # 마커 존재 확인
+          if ! grep -q "$START" README.md || ! grep -q "$END" README.md; then
+            echo "README.md에 마커가 없습니다. 마커를 추가하세요."
+            exit 1
+          fi
+
+          # 마커 사이를 _AUTO_INDEX.md 내용으로 치환
+          awk -v s="$START" -v e="$END" 'BEGIN{p=1}
+            $0 ~ s {print; system("cat _AUTO_INDEX.md"); p=0; next}
+            $0 ~ e {p=1}
+            p {print}
+          ' README.md > README.new
+
+          mv README.new README.md
+          rm -f _AUTO_INDEX.md
+
+      - name: Commit & push if changed
+        run: |
+          set -e
+          if git diff --quiet; then
+            echo "No changes in README."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "docs(readme): auto-update problem index"
+          git push
