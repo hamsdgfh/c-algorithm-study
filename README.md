@@ -1,7 +1,9 @@
 ## 📚 문제 목록 (자동 생성)
 
 <!-- AUTO-INDEX:START -->
+## Baekjoon
+- [1181_단어정렬.c](baekjoon/Silver/1181_단어정렬.c)
 
-_자동으로 생성됩니다. 파일만 추가하세요._
-
+## Programmers
+- [기능개발.c](programmers/Level2/기능개발.c)
 <!-- AUTO-INDEX:END -->
