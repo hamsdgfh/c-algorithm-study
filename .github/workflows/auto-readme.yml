@@ -2,7 +2,7 @@ name: Auto update README index (grouped raw/clean)
 
 on:
   push:
-    branches: [ "main" ]           # 기본 브랜치명에 맞게 수정
+    branches: [ "main" ]    # 기본 브랜치명이 다르면 수정하세요 (예: master)
     paths:
       - "baekjoon/**"
       - "programmers/**"
@@ -19,6 +19,7 @@ jobs:
     env:
       LANG: C.UTF-8
       LC_ALL: C.UTF-8
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,6 +47,7 @@ jobs:
             echo "## Baekjoon"
             local found=0
             # 폴더형: baekjoon/<Tier>/<문제폴더>/
+            #   예: baekjoon/Bronze_III/2884_알람시계/{raw.c,clean.c,note.md}
             while IFS= read -r d; do
               tier="$(echo "$d" | awk -F/ '{print $2}')"
               prob="$(basename "$d")"
@@ -61,14 +63,14 @@ jobs:
               if [ -n "$clean_link" ]; then out="${out}${dot}$clean_link"; dot=" • "; fi
               if [ -n "$note_link" ]; then out="${out}${dot}$note_link"; fi
 
-              # 표시용 티어 공백 처리 (Bronze_III -> Bronze III)
+              # 표시용 티어 (Bronze_III -> Bronze III)
               pretty_tier="$(echo "$tier" | sed 's/_/ /g')"
 
               printf -- "- **[%s](%s)** _(Tier: %s)_ — %s\n" "$prob" "$d" "$pretty_tier" "${out:-없음}"
               found=1
-            done < <(find baekjoon -type d -mindepth 3 -maxdepth 3 | sort)
+            done < <(find baekjoon -type d -mindepth 2 -maxdepth 2 | sort)
 
-            # 단일 파일형도 함께 지원 (baekjoon/<Tier>/*.c)
+            # 단일 파일형도 함께 지원: baekjoon/<Tier>/*.c
             while IFS= read -r f; do
               tier="$(echo "$f" | awk -F/ '{print $2}')"
               pretty_tier="$(echo "$tier" | sed 's/_/ /g')"
@@ -86,6 +88,7 @@ jobs:
             echo "## Programmers"
             local found=0
             # 폴더형: programmers/LevelX/<문제폴더>/
+            #   예: programmers/Level2/기능개발/{raw.c,clean.c,note.md}
             while IFS= read -r d; do
               level="$(echo "$d" | awk -F/ '{print $2}')"
               title="$(basename "$d")"
@@ -104,9 +107,9 @@ jobs:
               pretty_level="$(echo "$level" | sed 's/Level//')"
               printf -- "- **[%s](%s)** _(Level: %s)_ — %s\n" "$title" "$d" "$pretty_level" "${out:-없음}"
               found=1
-            done < <(find programmers -type d -mindepth 3 -maxdepth 3 | sort)
+            done < <(find programmers -type d -mindepth 2 -maxdepth 2 | sort)
 
-            # 단일 파일형도 함께 지원
+            # 단일 파일형도 함께 지원: programmers/LevelX/*.c
             while IFS= read -r f; do
               level="$(echo "$f" | awk -F/ '{print $2}')"
               pretty_level="$(echo "$level" | sed 's/Level//')"
@@ -134,15 +137,26 @@ jobs:
           START="<!-- AUTO-INDEX:START -->"
           END="<!-- AUTO-INDEX:END -->"
 
+          # README 없으면 기본 골격 생성
           if [ ! -f README.md ]; then
-            echo -e "# C Algorithm Study\n\n$START\n\n$END" > README.md
+            cat > README.md <<'EOF'
+# C Algorithm Study
+
+## 📚 문제 목록 (자동 생성)
+
+<!-- AUTO-INDEX:START -->
+
+_자동으로 생성됩니다. 문제 폴더만 추가하세요._
+
+<!-- AUTO-INDEX:END -->
+EOF
           fi
 
-          if ! grep -q "$START" README.md || ! grep -q "$END" README.md; then
-            echo "README.md에 마커가 없습니다. 마커를 추가하세요."
-            exit 1
-          fi
+          # 마커 확인
+          grep -q "$START" README.md
+          grep -q "$END" README.md
 
+          # 마커 사이를 _AUTO_INDEX.md로 치환
           awk -v s="$START" -v e="$END" 'BEGIN{p=1}
             $0 ~ s {print; system("cat _AUTO_INDEX.md"); p=0; next}
             $0 ~ e {p=1}
