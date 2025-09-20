@@ -8,7 +8,7 @@
  * Note     :
  */
 
- #include <stdio.h>
+#include <stdio.h>
 
 int money(int x, int y){
     return x * y;
