@@ -134,22 +134,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
           START="<!-- AUTO-INDEX:START -->"
           END="<!-- AUTO-INDEX:END -->"
 
-          # README 없으면 기본 골격 생성
+          # README 없으면 기본 골격 생성 (heredoc 없이 안전하게 생성)
           if [ ! -f README.md ]; then
-            cat > README.md <<'EOF'
-# C Algorithm Study
-
-## 📚 문제 목록 (자동 생성)
-
-<!-- AUTO-INDEX:START -->
-
-_자동으로 생성됩니다. 문제 폴더만 추가하세요._
-
-<!-- AUTO-INDEX:END -->
-EOF
+            printf "%s\n" "# C Algorithm Study" > README.md
+            printf "\n" >> README.md
+            printf "%s\n" "## 📚 문제 목록 (자동 생성)" >> README.md
+            printf "\n" >> README.md
+            printf "%s\n" "$START" >> README.md
+            printf "\n" >> README.md
+            printf "%s\n" "_자동으로 생성됩니다. 문제 폴더만 추가하세요._" >> README.md
+            printf "\n" >> README.md
+            printf "%s\n" "$END" >> README.md
           fi
 
           # 마커 확인
