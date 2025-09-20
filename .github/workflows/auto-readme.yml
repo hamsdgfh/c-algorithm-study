@@ -2,7 +2,12 @@ name: Auto update README index (grouped raw/clean)
 
 on:
   push:
-    branches: [ "main" ]   # 기본 브랜치 명에 맞게 수정
+    branches: [ "main" ]           # 기본 브랜치명에 맞게 수정
+    paths:
+      - "baekjoon/**"
+      - "programmers/**"
+      - ".github/workflows/auto-readme.yml"
+      - "README.md"
   workflow_dispatch:
 
 permissions:
@@ -11,6 +16,9 @@ permissions:
 jobs:
   update-readme:
     runs-on: ubuntu-latest
+    env:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,45 +26,54 @@ jobs:
           fetch-depth: 0
 
       - name: Generate grouped index
+        shell: bash
         run: |
           set -euo pipefail
+
+          echo "[DEBUG] Listing directories for BOJ/PGS..."
+          find baekjoon -maxdepth 3 -print 2>/dev/null || true
+          find programmers -maxdepth 3 -print 2>/dev/null || true
 
           link_if() {
             # $1 = path, $2 = label
             if [ -f "$1" ]; then
-              echo "[$2]($1)"
+              printf '[%s](%s)' "$2" "$1"
             fi
           }
 
           list_grouped_boj() {
-            # 문제 폴더 구조: baekjoon/<Tier>/<문제번호_제목>/{raw.c,clean.c,note.md}
-            # 예: baekjoon/Silver/1181_단어정렬/raw.c
-            if [ ! -d baekjoon ]; then return 0; fi
+            [ -d baekjoon ] || return 0
             echo "## Baekjoon"
-            found=0
-            # 문제 폴더들만 정렬하여 순회
+            local found=0
+            # 폴더형: baekjoon/<Tier>/<문제폴더>/
             while IFS= read -r d; do
               tier="$(echo "$d" | awk -F/ '{print $2}')"
               prob="$(basename "$d")"
-              raw_link="$(link_if "$d/raw.c" raw)"
-              clean_link="$(link_if "$d/clean.c" clean)"
-              note_link="$(link_if "$d/note.md" note)"
-              # 링크 구분점 만들기
-              dot=""
-              [ -n "$raw_link" ]   && { out="$raw_link"; dot=" • "; }
-              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
-              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
 
-              # 폴더형 문제 한 줄 출력
-              echo "- **[$prob]($d)** _(Tier: $tier)_ — ${out:-없음}"
+              local raw_link clean_link note_link out dot
+              raw_link="$(link_if "$d/raw.c" raw || true)"
+              clean_link="$(link_if "$d/clean.c" clean || true)"
+              note_link="$(link_if "$d/note.md" note || true)"
+              out=""
+              dot=""
+
+              if [ -n "$raw_link" ]; then out="$raw_link"; dot=" • "; fi
+              if [ -n "$clean_link" ]; then out="${out}${dot}$clean_link"; dot=" • "; fi
+              if [ -n "$note_link" ]; then out="${out}${dot}$note_link"; fi
+
+              # 표시용 티어 공백 처리 (Bronze_III -> Bronze III)
+              pretty_tier="$(echo "$tier" | sed 's/_/ /g')"
+
+              printf -- "- **[%s](%s)** _(Tier: %s)_ — %s\n" "$prob" "$d" "$pretty_tier" "${out:-없음}"
               found=1
             done < <(find baekjoon -type d -mindepth 3 -maxdepth 3 | sort)
 
-            # (옵션) 옛 구조: 단일 .c 파일도 표시 (baekjoon/<Tier>/*.c)
+            # 단일 파일형도 함께 지원 (baekjoon/<Tier>/*.c)
             while IFS= read -r f; do
               tier="$(echo "$f" | awk -F/ '{print $2}')"
+              pretty_tier="$(echo "$tier" | sed 's/_/ /g')"
               name="$(basename "$f")"
-              echo "- [$name]($f) _(Tier: $tier)_"
+              printf -- "- [%s](%s) _(Tier: %s)_\n" "$name" "$f" "$pretty_tier"
               found=1
             done < <(find baekjoon -type f -mindepth 2 -maxdepth 2 -name '*.c' | sort)
 
@@ -65,30 +82,36 @@ jobs:
           }
 
           list_grouped_pgs() {
-            # 문제 폴더 구조: programmers/LevelX/<제목>/{raw.c,clean.c,note.md}
-            if [ ! -d programmers ]; then return 0; fi
+            [ -d programmers ] || return 0
             echo "## Programmers"
-            found=0
+            local found=0
+            # 폴더형: programmers/LevelX/<문제폴더>/
             while IFS= read -r d; do
               level="$(echo "$d" | awk -F/ '{print $2}')"
               title="$(basename "$d")"
-              raw_link="$(link_if "$d/raw.c" raw)"
-              clean_link="$(link_if "$d/clean.c" clean)"
-              note_link="$(link_if "$d/note.md" note)"
-              dot=""
-              [ -n "$raw_link" ]   && { out="$raw_link"; dot=" • "; }
-              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
-              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
 
-              echo "- **[$title]($d)** _(Level: ${level#Level})_ — ${out:-없음}"
+              local raw_link clean_link note_link out dot
+              raw_link="$(link_if "$d/raw.c" raw || true)"
+              clean_link="$(link_if "$d/clean.c" clean || true)"
+              note_link="$(link_if "$d/note.md" note || true)"
+              out=""
+              dot=""
+
+              if [ -n "$raw_link" ]; then out="$raw_link"; dot=" • "; fi
+              if [ -n "$clean_link" ]; then out="${out}${dot}$clean_link"; dot=" • "; fi
+              if [ -n "$note_link" ]; then out="${out}${dot}$note_link"; fi
+
+              pretty_level="$(echo "$level" | sed 's/Level//')"
+              printf -- "- **[%s](%s)** _(Level: %s)_ — %s\n" "$title" "$d" "$pretty_level" "${out:-없음}"
               found=1
             done < <(find programmers -type d -mindepth 3 -maxdepth 3 | sort)
 
-            # (옵션) 옛 구조: 단일 .c 파일도 표시 (programmers/LevelX/*.c)
+            # 단일 파일형도 함께 지원
             while IFS= read -r f; do
               level="$(echo "$f" | awk -F/ '{print $2}')"
+              pretty_level="$(echo "$level" | sed 's/Level//')"
               name="$(basename "$f")"
-              echo "- [$name]($f) _(Level: ${level#Level})_"
+              printf -- "- [%s](%s) _(Level: %s)_\n" "$name" "$f" "$pretty_level"
               found=1
             done < <(find programmers -type f -mindepth 2 -maxdepth 2 -name '*.c' | sort)
 
@@ -100,25 +123,26 @@ jobs:
             list_grouped_boj
             list_grouped_pgs
           } > _AUTO_INDEX.md
-          echo "=== Generated index ==="
+
+          echo "=== _AUTO_INDEX.md ==="
           cat _AUTO_INDEX.md
 
       - name: Update README between markers
+        shell: bash
         run: |
           set -euo pipefail
           START="<!-- AUTO-INDEX:START -->"
           END="<!-- AUTO-INDEX:END -->"
 
-          # README 없으면 생성
           if [ ! -f README.md ]; then
             echo -e "# C Algorithm Study\n\n$START\n\n$END" > README.md
           fi
 
-          # 마커 확인
-          grep -q "$START" README.md
-          grep -q "$END" README.md
+          if ! grep -q "$START" README.md || ! grep -q "$END" README.md; then
+            echo "README.md에 마커가 없습니다. 마커를 추가하세요."
+            exit 1
+          fi
 
-          # 치환
           awk -v s="$START" -v e="$END" 'BEGIN{p=1}
             $0 ~ s {print; system("cat _AUTO_INDEX.md"); p=0; next}
             $0 ~ e {p=1}
@@ -129,6 +153,7 @@ jobs:
           rm -f _AUTO_INDEX.md
 
       - name: Commit & push if changed
+        shell: bash
         run: |
           set -euo pipefail
           if git diff --quiet; then
