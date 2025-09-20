@@ -1,15 +1,15 @@
-name: Auto update README index
+name: Auto update README index (grouped raw/clean)
 
 on:
   push:
-    branches: [ "main" ]   # 기본 브랜치가 main이 아니라면 수정
+    branches: [ "main" ]   # 기본 브랜치 명에 맞게 수정
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  update-readme:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,61 +17,108 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate index markdown
-        id: gen
+      - name: Generate grouped index
         run: |
-          set -e
+          set -euo pipefail
 
-          # 수집 함수: 경로에서 파일명만 뽑아 링크 라인으로 변환
-          list_md () {
-            base="$1"
-            if [ -d "$base" ]; then
-              # .c 파일만, 경로 기준 정렬
-              find "$base" -type f -name '*.c' | sort | while read -r f; do
-                name="$(basename "$f")"
-                echo "- [$name]($f)"
-              done
+          link_if() {
+            # $1 = path, $2 = label
+            if [ -f "$1" ]; then
+              echo "[$2]($1)"
             fi
           }
 
-          # 섹션별 헤더 + 리스트 생성
-          BAEKJOON_LIST="$(list_md baekjoon)"
-          PROGRAMMERS_LIST="$(list_md programmers)"
-
-          # 비어있을 때의 대체 문구
-          [ -z "$BAEKJOON_LIST" ] && BAEKJOON_LIST="- (아직 없음)"
-          [ -z "$PROGRAMMERS_LIST" ] && PROGRAMMERS_LIST="- (아직 없음)"
-
-          # 최종 블록
-          {
+          list_grouped_boj() {
+            # 문제 폴더 구조: baekjoon/<Tier>/<문제번호_제목>/{raw.c,clean.c,note.md}
+            # 예: baekjoon/Silver/1181_단어정렬/raw.c
+            if [ ! -d baekjoon ]; then return 0; fi
             echo "## Baekjoon"
-            echo "$BAEKJOON_LIST"
-            echo
-            echo "## Programmers"
-            echo "$PROGRAMMERS_LIST"
-          } > _AUTO_INDEX.md
+            found=0
+            # 문제 폴더들만 정렬하여 순회
+            while IFS= read -r d; do
+              tier="$(echo "$d" | awk -F/ '{print $2}')"
+              prob="$(basename "$d")"
+              raw_link="$(link_if "$d/raw.c" raw)"
+              clean_link="$(link_if "$d/clean.c" clean)"
+              note_link="$(link_if "$d/note.md" note)"
+              # 링크 구분점 만들기
+              dot=""
+              [ -n "$raw_link" ]   && { out="$raw_link"; dot=" • "; }
+              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
+              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
 
-          echo "Generated _AUTO_INDEX.md:"
+              # 폴더형 문제 한 줄 출력
+              echo "- **[$prob]($d)** _(Tier: $tier)_ — ${out:-없음}"
+              found=1
+            done < <(find baekjoon -type d -mindepth 3 -maxdepth 3 | sort)
+
+            # (옵션) 옛 구조: 단일 .c 파일도 표시 (baekjoon/<Tier>/*.c)
+            while IFS= read -r f; do
+              tier="$(echo "$f" | awk -F/ '{print $2}')"
+              name="$(basename "$f")"
+              echo "- [$name]($f) _(Tier: $tier)_"
+              found=1
+            done < <(find baekjoon -type f -mindepth 2 -maxdepth 2 -name '*.c' | sort)
+
+            [ "$found" -eq 1 ] || echo "- (아직 없음)"
+            echo
+          }
+
+          list_grouped_pgs() {
+            # 문제 폴더 구조: programmers/LevelX/<제목>/{raw.c,clean.c,note.md}
+            if [ ! -d programmers ]; then return 0; fi
+            echo "## Programmers"
+            found=0
+            while IFS= read -r d; do
+              level="$(echo "$d" | awk -F/ '{print $2}')"
+              title="$(basename "$d")"
+              raw_link="$(link_if "$d/raw.c" raw)"
+              clean_link="$(link_if "$d/clean.c" clean)"
+              note_link="$(link_if "$d/note.md" note)"
+              dot=""
+              [ -n "$raw_link" ]   && { out="$raw_link"; dot=" • "; }
+              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
+              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
+
+              echo "- **[$title]($d)** _(Level: ${level#Level})_ — ${out:-없음}"
+              found=1
+            done < <(find programmers -type d -mindepth 3 -maxdepth 3 | sort)
+
+            # (옵션) 옛 구조: 단일 .c 파일도 표시 (programmers/LevelX/*.c)
+            while IFS= read -r f; do
+              level="$(echo "$f" | awk -F/ '{print $2}')"
+              name="$(basename "$f")"
+              echo "- [$name]($f) _(Level: ${level#Level})_"
+              found=1
+            done < <(find programmers -type f -mindepth 2 -maxdepth 2 -name '*.c' | sort)
+
+            [ "$found" -eq 1 ] || echo "- (아직 없음)"
+            echo
+          }
+
+          {
+            list_grouped_boj
+            list_grouped_pgs
+          } > _AUTO_INDEX.md
+          echo "=== Generated index ==="
           cat _AUTO_INDEX.md
 
       - name: Update README between markers
         run: |
-          set -e
+          set -euo pipefail
           START="<!-- AUTO-INDEX:START -->"
           END="<!-- AUTO-INDEX:END -->"
 
-          # 안전장치: README가 없으면 새로 생성
+          # README 없으면 생성
           if [ ! -f README.md ]; then
             echo -e "# C Algorithm Study\n\n$START\n\n$END" > README.md
           fi
 
-          # 마커 존재 확인
-          if ! grep -q "$START" README.md || ! grep -q "$END" README.md; then
-            echo "README.md에 마커가 없습니다. 마커를 추가하세요."
-            exit 1
-          fi
+          # 마커 확인
+          grep -q "$START" README.md
+          grep -q "$END" README.md
 
-          # 마커 사이를 _AUTO_INDEX.md 내용으로 치환
+          # 치환
           awk -v s="$START" -v e="$END" 'BEGIN{p=1}
             $0 ~ s {print; system("cat _AUTO_INDEX.md"); p=0; next}
             $0 ~ e {p=1}
@@ -83,7 +130,7 @@ jobs:
 
       - name: Commit & push if changed
         run: |
-          set -e
+          set -euo pipefail
           if git diff --quiet; then
             echo "No changes in README."
             exit 0
@@ -91,5 +138,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "docs(readme): auto-update problem index"
+          git commit -m "docs(readme): auto-update grouped index"
           git push
