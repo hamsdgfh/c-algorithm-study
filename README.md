@@ -8,7 +8,7 @@
 - [1181_단어정렬.c](baekjoon/Silver/1181_단어정렬.c) _(Tier: Silver)_
 
 ## Programmers
-- **[피자나눠먹기(1)](programmers/Level0/피자나눠먹기(1))** _(Level: 0)_ — [raw](programmers/Level0/피자나눠먹기(1)/raw.c) • [clean](programmers/Level0/피자나눠먹기(1)/clean.c)
+- **[피자나눠먹기(1)](programmers/Level0/피자나눠먹기(1))** _(Level: 0)_ — [raw](programmers/Level0/피자나눠먹기(1)/raw.c) • [clean](programmers/Level0/피자나눠먹기(1)/clean.c) • [note](programmers/Level0/피자나눠먹기(1)/note.md)
 - [기능개발.c](programmers/Level2/기능개발.c) _(Level: 2)_
 
 <!-- AUTO-INDEX:END -->
