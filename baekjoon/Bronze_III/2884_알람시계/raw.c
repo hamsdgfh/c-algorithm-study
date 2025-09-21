@@ -22,7 +22,7 @@ int main() {
     if (time < 0)
         time += 24 * 60;
 
-    H1 = time / 60 % 24;
+    H1 = time / 60;
     M1 = time % 60;
 
     printf("%d %d", H1, M1);
