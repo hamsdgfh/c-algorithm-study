@@ -29,8 +29,8 @@ int main() {
     }
 
     if(sum == all_money)
-        printf("YES\n");
-    else printf("NO\n");
+        printf("Yes\n");
+    else printf("No\n");
 
     return 0;
 }
