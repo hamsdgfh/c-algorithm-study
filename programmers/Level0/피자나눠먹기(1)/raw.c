@@ -1,11 +1,11 @@
 /*
  * Platform : Programmers
- * Level    : 2
- * Problem  : 기능개발
+ * Level    : 0
+ * Problem  : 피자나눠먹기(1)
  * Link     : https://school.programmers.co.kr/learn/courses/30/lessons/42586
- * Idea     : 남은 일수 계산 → 큐/그룹핑
- * Complex. : O(n)
- * Note     : 배포 묶음 처리
+ * Idea     : 
+ * Complex. : 
+ * Note     : 
  */
 
 #include <stdio.h>
