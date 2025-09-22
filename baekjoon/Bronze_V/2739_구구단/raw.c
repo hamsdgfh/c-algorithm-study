@@ -1,3 +1,13 @@
+/*
+ * Platform : BOJ (백준)
+ * Problem  : 2739 구구단
+ * Tier     : Bronze III
+ * Link     : https://www.acmicpc.net/problem/2739
+ * Idea     : 
+ * Complex. : 
+ * Note     : 
+ */
+
 #include <stdio.h>
 
 int main() {
