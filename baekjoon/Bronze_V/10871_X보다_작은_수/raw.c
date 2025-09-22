@@ -1,8 +1,8 @@
 /*
  * Platform : BOJ (백준)
- * Problem  : 2884 알람 시계
- * Tier     : Bronze III
- * Link     : https://www.acmicpc.net/problem/2884
+ * Problem  : 10871 X보다 작은 수
+ * Tier     : Bronze V
+ * Link     : https://www.acmicpc.net/problem/10871
  * Idea     : 
  * Complex. : 
  * Note     : 
