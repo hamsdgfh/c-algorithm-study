@@ -13,16 +13,16 @@
 int main() {
     int N, X;
     int a;
-    int cheak = 1;
+    int check = 1;
     scanf("%d %d", &N, &X);
 
     for (int i = 1 ; i <= N ; i++){
         scanf("%d", &a);
 
         if (a<X){
-            if(!cheak) printf(" ");
+            if(!check) printf(" ");
             printf("%d", a);
-            cheak = 0;
+            check = 0;
         }
     }
     return 0;
