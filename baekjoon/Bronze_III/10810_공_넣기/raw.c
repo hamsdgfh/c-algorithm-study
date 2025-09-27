@@ -1,3 +1,13 @@
+/*
+ * Platform : BOJ (백준)
+ * Problem  : 공 넣기
+ * Tier     : Bronze III
+ * Link     : https://www.acmicpc.net/problem/
+ * Idea     : 
+ * Complex. : 
+ * Note     : 
+ */
+
 #include <stdio.h>
 
 int main(void) {
