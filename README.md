@@ -2,6 +2,7 @@
 
 <!-- AUTO-INDEX:START -->
 ## Baekjoon
+- **[2562_최댓값](baekjoon/Bronze_III/2562_최댓값)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/2562_최댓값/raw.c)
 - **[2588_곱셈;](baekjoon/Bronze_III/2588_곱셈;)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/2588_곱셈;/raw.c)
 - **[2884_알람시계](baekjoon/Bronze_III/2884_알람시계)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/2884_알람시계/raw.c) • [clean](baekjoon/Bronze_III/2884_알람시계/clean.c) • [note](baekjoon/Bronze_III/2884_알람시계/note.md)
 - **[10807_개수_세기](baekjoon/Bronze_IV/10807_개수_세기)** _(Tier: Bronze IV)_ — [raw](baekjoon/Bronze_IV/10807_개수_세기/raw.c)
