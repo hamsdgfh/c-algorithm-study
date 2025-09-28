@@ -13,8 +13,7 @@
 - [1181_단어정렬.c](baekjoon/Silver/1181_단어정렬.c) _(Tier: Silver)_
 
 ## Programmers
-- **[ n보다_커질_때까지_더하기](programmers/Level0/ n보다_커질_때까지_더하기)** _(Level: 0)_ — [clean](programmers/Level0/ n보다_커질_때까지_더하기/clean.c)
-- **[n보다_커질_때까지_더하기](programmers/Level0/n보다_커질_때까지_더하기)** _(Level: 0)_ — [raw](programmers/Level0/n보다_커질_때까지_더하기/raw.c)
+- **[n보다_커질_때까지_더하기](programmers/Level0/n보다_커질_때까지_더하기)** _(Level: 0)_ — [raw](programmers/Level0/n보다_커질_때까지_더하기/raw.c) • [clean](programmers/Level0/n보다_커질_때까지_더하기/clean.c)
 - **[머쓱이보다_키_큰_사람](programmers/Level0/머쓱이보다_키_큰_사람)** _(Level: 0)_ — [raw](programmers/Level0/머쓱이보다_키_큰_사람/raw.c)
 - **[문자열_돌리기](programmers/Level0/문자열_돌리기)** _(Level: 0)_ — [raw](programmers/Level0/문자열_돌리기/raw.c)
 - **[양꼬치](programmers/Level0/양꼬치)** _(Level: 0)_ — [raw](programmers/Level0/양꼬치/raw.c)
