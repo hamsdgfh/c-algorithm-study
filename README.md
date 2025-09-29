@@ -9,6 +9,7 @@
 - **[10807_개수_세기](baekjoon/Bronze_IV/10807_개수_세기)** _(Tier: Bronze IV)_ — [raw](baekjoon/Bronze_IV/10807_개수_세기/raw.c)
 - **[25304_영수증](baekjoon/Bronze_IV/25304_영수증)** _(Tier: Bronze IV)_ — [raw](baekjoon/Bronze_IV/25304_영수증/raw.c) • [clean](baekjoon/Bronze_IV/25304_영수증/clean.c)
 - **[10871_X보다_작은_수](baekjoon/Bronze_V/10871_X보다_작은_수)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10871_X보다_작은_수/raw.c) • [clean](baekjoon/Bronze_V/10871_X보다_작은_수/clean.c)
+- **[2438_별_찍기](baekjoon/Bronze_V/2438_별_찍기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2438_별_찍기/raw.c)
 - **[2739_구구단](baekjoon/Bronze_V/2739_구구단)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2739_구구단/raw.c)
 - [1181_단어정렬.c](baekjoon/Silver/1181_단어정렬.c) _(Tier: Silver)_
 
