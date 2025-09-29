@@ -11,7 +11,7 @@
 - **[10871_X보다_작은_수](baekjoon/Bronze_V/10871_X보다_작은_수)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10871_X보다_작은_수/raw.c) • [clean](baekjoon/Bronze_V/10871_X보다_작은_수/clean.c)
 - **[2438_별_찍기](baekjoon/Bronze_V/2438_별_찍기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2438_별_찍기/raw.c)
 - **[2739_구구단](baekjoon/Bronze_V/2739_구구단)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2739_구구단/raw.c)
-- [1181_단어정렬.c](baekjoon/Silver/1181_단어정렬.c) _(Tier: Silver)_
+- **[25206_너의_평점은](baekjoon/Silver_V/25206_너의_평점은)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/25206_너의_평점은/raw.c)
 
 ## Programmers
 - **[n보다_커질_때까지_더하기](programmers/Level0/n보다_커질_때까지_더하기)** _(Level: 0)_ — [raw](programmers/Level0/n보다_커질_때까지_더하기/raw.c) • [clean](programmers/Level0/n보다_커질_때까지_더하기/clean.c)
