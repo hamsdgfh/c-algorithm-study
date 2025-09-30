@@ -17,6 +17,7 @@
 - **[n보다_커질_때까지_더하기](programmers/Level0/n보다_커질_때까지_더하기)** _(Level: 0)_ — [raw](programmers/Level0/n보다_커질_때까지_더하기/raw.c) • [clean](programmers/Level0/n보다_커질_때까지_더하기/clean.c)
 - **[머쓱이보다_키_큰_사람](programmers/Level0/머쓱이보다_키_큰_사람)** _(Level: 0)_ — [raw](programmers/Level0/머쓱이보다_키_큰_사람/raw.c)
 - **[문자열_돌리기](programmers/Level0/문자열_돌리기)** _(Level: 0)_ — [raw](programmers/Level0/문자열_돌리기/raw.c)
+- **[아이스_아메리카노](programmers/Level0/아이스_아메리카노)** _(Level: 0)_ — [note](programmers/Level0/아이스_아메리카노/note.md)
 - **[양꼬치](programmers/Level0/양꼬치)** _(Level: 0)_ — [raw](programmers/Level0/양꼬치/raw.c)
 - **[원소들의_곱과_합](programmers/Level0/원소들의_곱과_합)** _(Level: 0)_ — [raw](programmers/Level0/원소들의_곱과_합/raw.c)
 - **[주사위게임2](programmers/Level0/주사위게임2)** _(Level: 0)_ — [raw](programmers/Level0/주사위게임2/raw.c)
