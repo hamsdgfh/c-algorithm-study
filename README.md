@@ -27,4 +27,7 @@
 - **[홀짝_구분하기](programmers/Level0/홀짝_구분하기)** _(Level: 0)_ — [raw](programmers/Level0/홀짝_구분하기/raw.c) • 
 - [기능개발.c](programmers/Level2/기능개발.c) _(Level: 2)_
 
+## SW Expert Academy
+- **[2072_홀수만_더하기](swea/D1/2072_홀수만_더하기)** _(Level: D1)_ — [raw](swea/D1/2072_홀수만_더하기/raw.c) • 
+
 <!-- AUTO-INDEX:END -->
