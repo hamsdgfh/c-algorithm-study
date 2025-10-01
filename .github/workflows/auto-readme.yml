@@ -6,6 +6,7 @@ on:
     paths:
       - "baekjoon/**"
       - "programmers/**"
+      - "swea/**"
       - ".github/workflows/auto-readme.yml"
       - "README.md"
   workflow_dispatch:
@@ -31,9 +32,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "[DEBUG] Listing directories for BOJ/PGS..."
-          find baekjoon -maxdepth 3 -print 2>/dev/null || true
+          echo "[DEBUG] Listing directories for BOJ/PGS/SWEA..."
+          find baekjoon   -maxdepth 3 -print 2>/dev/null || true
           find programmers -maxdepth 3 -print 2>/dev/null || true
+          find swea       -maxdepth 3 -print 2>/dev/null || true
 
           link_if() {
             # $1 = path, $2 = label
@@ -46,8 +48,7 @@ jobs:
             [ -d baekjoon ] || return 0
             echo "## Baekjoon"
             local found=0
-            # 폴더형: baekjoon/<Tier>/<문제폴더>/
-            #   예: baekjoon/Bronze_III/2884_알람시계/{raw.c,clean.c,note.md}
+            # 폴더형: baekjoon/<Tier>/<문제폴더>/{raw.c,clean.c,note.md}
             while IFS= read -r d; do
               tier="$(echo "$d" | awk -F/ '{print $2}')"
               prob="$(basename "$d")"
@@ -56,16 +57,13 @@ jobs:
               raw_link="$(link_if "$d/raw.c" raw || true)"
               clean_link="$(link_if "$d/clean.c" clean || true)"
               note_link="$(link_if "$d/note.md" note || true)"
-              out=""
-              dot=""
+              out=""; dot=""
 
-              if [ -n "$raw_link" ]; then out="$raw_link"; dot=" • "; fi
-              if [ -n "$clean_link" ]; then out="${out}${dot}$clean_link"; dot=" • "; fi
+              if [ -n "$raw_link"  ]; then out="$raw_link";           dot=" • "; fi
+              if [ -n "$clean_link"]; then out="${out}${dot}$clean_link"; dot=" • "; fi
               if [ -n "$note_link" ]; then out="${out}${dot}$note_link"; fi
 
-              # 표시용 티어 (Bronze_III -> Bronze III)
-              pretty_tier="$(echo "$tier" | sed 's/_/ /g')"
-
+              pretty_tier="$(echo "$tier" | sed 's/_/ /g')" # Bronze_III -> Bronze III
               printf -- "- **[%s](%s)** _(Tier: %s)_ — %s\n" "$prob" "$d" "$pretty_tier" "${out:-없음}"
               found=1
             done < <(find baekjoon -type d -mindepth 2 -maxdepth 2 | sort)
@@ -87,8 +85,7 @@ jobs:
             [ -d programmers ] || return 0
             echo "## Programmers"
             local found=0
-            # 폴더형: programmers/LevelX/<문제폴더>/
-            #   예: programmers/Level2/기능개발/{raw.c,clean.c,note.md}
+            # 폴더형: programmers/LevelX/<문제폴더>/{raw.c,clean.c,note.md}
             while IFS= read -r d; do
               level="$(echo "$d" | awk -F/ '{print $2}')"
               title="$(basename "$d")"
@@ -97,11 +94,10 @@ jobs:
               raw_link="$(link_if "$d/raw.c" raw || true)"
               clean_link="$(link_if "$d/clean.c" clean || true)"
               note_link="$(link_if "$d/note.md" note || true)"
-              out=""
-              dot=""
+              out=""; dot=""
 
-              if [ -n "$raw_link" ]; then out="$raw_link"; dot=" • "; fi
-              if [ -n "$clean_link" ]; then out="${out}${dot}$clean_link"; dot=" • "; fi
+              if [ -n "$raw_link"  ]; then out="$raw_link";           dot=" • "; fi
+              if [ -n "$clean_link"]; then out="${out}${dot}$clean_link"; dot=" • "; fi
               if [ -n "$note_link" ]; then out="${out}${dot}$note_link"; fi
 
               pretty_level="$(echo "$level" | sed 's/Level//')"
@@ -122,9 +118,46 @@ jobs:
             echo
           }
 
+          list_grouped_swea() {
+            [ -d swea ] || return 0
+            echo "## SW Expert Academy"
+            local found=0
+            # 권장 구조: swea/D3/<문제폴더>/{raw.c,clean.c,note.md}
+            #  - 레벨명: D1, D2, D3, D4, D5, D6 등
+            while IFS= read -r d; do
+              level="$(echo "$d" | awk -F/ '{print $2}')"  # D1/D2/...
+              title="$(basename "$d")"
+
+              local raw_link clean_link note_link out dot
+              raw_link="$(link_if "$d/raw.c" raw || true)"
+              clean_link="$(link_if "$d/clean.c" clean || true)"
+              note_link="$(link_if "$d/note.md" note || true)"
+              out=""; dot=""
+
+              if [ -n "$raw_link"  ]; then out="$raw_link";           dot=" • "; fi
+              if [ -n "$clean_link"]; then out="${out}${dot}$clean_link"; dot=" • "; fi
+              if [ -n "$note_link" ]; then out="${out}${dot}$note_link"; fi
+
+              printf -- "- **[%s](%s)** _(Level: %s)_ — %s\n" "$title" "$d" "$level" "${out:-없음}"
+              found=1
+            done < <(find swea -type d -mindepth 2 -maxdepth 2 | sort)
+
+            # 단일 파일형도 함께 지원: swea/D3/*.c
+            while IFS= read -r f; do
+              level="$(echo "$f" | awk -F/ '{print $2}')"
+              name="$(basename "$f")"
+              printf -- "- [%s](%s) _(Level: %s)_\n" "$name" "$f" "$level"
+              found=1
+            done < <(find swea -type f -mindepth 2 -maxdepth 2 -name '*.c' | sort)
+
+            [ "$found" -eq 1 ] || echo "- (아직 없음)"
+            echo
+          }
+
           {
             list_grouped_boj
             list_grouped_pgs
+            list_grouped_swea
           } > _AUTO_INDEX.md
 
           echo "=== _AUTO_INDEX.md ==="
@@ -138,7 +171,7 @@ jobs:
           START="<!-- AUTO-INDEX:START -->"
           END="<!-- AUTO-INDEX:END -->"
 
-          # README 없으면 기본 골격 생성 (heredoc 없이 안전하게 생성)
+          # README 없으면 기본 골격 생성
           if [ ! -f README.md ]; then
             printf "%s\n" "# C Algorithm Study" > README.md
             printf "\n" >> README.md
