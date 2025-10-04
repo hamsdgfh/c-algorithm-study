@@ -2,6 +2,7 @@
 
 <!-- AUTO-INDEX:START -->
 ## Baekjoon
+- **[5622_다이얼](baekjoon/Bronze_II/5622_다이얼)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/5622_다이얼/raw.c) • 
 - **[10810_공_넣기](baekjoon/Bronze_III/10810_공_넣기)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/10810_공_넣기/raw.c) • 
 - **[11718_그대로_출력하기](baekjoon/Bronze_III/11718_그대로_출력하기)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/11718_그대로_출력하기/raw.c) • 
 - **[2562_최댓값](baekjoon/Bronze_III/2562_최댓값)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/2562_최댓값/raw.c) • 
