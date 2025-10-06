@@ -57,9 +57,9 @@ jobs:
               clean_link="$(link_if "$d/clean.c" clean || true)"
               note_link="$(link_if "$d/note.md" note || true)"
               out=""; dot=""
-              [ -n "$raw_link" ]  && { out="$raw_link";           dot=" • "; }
-              [ -n "$clean_link" ]&& { out="${out}${dot}$clean_link"; dot=" • "; }
-              [ -n "$note_link" ] && { out="${out}${dot}$note_link"; }
+              [ -n "$raw_link" ]   && { out="$raw_link";             dot=" • "; }
+              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
+              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
               pretty_tier="$(echo "$tier" | sed 's/_/ /g')" # Bronze_III -> Bronze III
               printf -- "- **[%s](%s)** _(Tier: %s)_ — %s\n" "$prob" "$d" "$pretty_tier" "${out:-없음}"
               found=1
@@ -90,9 +90,9 @@ jobs:
               clean_link="$(link_if "$d/clean.c" clean || true)"
               note_link="$(link_if "$d/note.md" note || true)"
               out=""; dot=""
-              [ -n "$raw_link" ]  && { out="$raw_link";           dot=" • "; }
-              [ -n "$clean_link" ]&& { out="${out}${dot}$clean_link"; dot=" • "; }
-              [ -n "$note_link" ] && { out="${out}${dot}$note_link"; }
+              [ -n "$raw_link" ]   && { out="$raw_link";             dot=" • "; }
+              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
+              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
               pretty_level="$(echo "$level" | sed 's/Level//')"
               printf -- "- **[%s](%s)** _(Level: %s)_ — %s\n" "$title" "$d" "$pretty_level" "${out:-없음}"
               found=1
@@ -123,9 +123,9 @@ jobs:
               clean_link="$(link_if "$d/clean.c" clean || true)"
               note_link="$(link_if "$d/note.md" note || true)"
               out=""; dot=""
-              [ -n "$raw_link" ]  && { out="$raw_link";           dot=" • "; }
-              [ -n "$clean_link" ]&& { out="${out}${dot}$clean_link"; dot=" • "; }
-              [ -n "$note_link" ] && { out="${out}${dot}$note_link"; }
+              [ -n "$raw_link" ]   && { out="$raw_link";             dot=" • "; }
+              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
+              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
               printf -- "- **[%s](%s)** _(Level: %s)_ — %s\n" "$title" "$d" "$level" "${out:-없음}"
               found=1
             done < <(find swea -type d -mindepth 2 -maxdepth 2 | sort)
@@ -163,7 +163,7 @@ jobs:
           echo "=== _RECENT.md ==="
           cat _RECENT.md
 
-      - name: Update README between markers
+      - name: Update README between markers (robust)
         shell: bash
         run: |
           set -euo pipefail
@@ -173,42 +173,59 @@ jobs:
           RSTART="<!-- RECENT:START -->"
           REND="<!-- RECENT:END -->"
 
+          # 치환 소스 파일이 없더라도 실패하지 않도록 보장
+          : > _AUTO_INDEX.md
+          : > _RECENT.md
+
           # README 없으면 기본 골격 생성
           if [ ! -f README.md ]; then
-            printf "%s\n" "# C Algorithm Study" > README.md
-            printf "\n" >> README.md
-            printf "%s\n" "## 🆕 최근 업데이트 (자동)" >> README.md
-            printf "%s\n" "$RSTART" >> README.md
-            printf "%s\n" "- (최근 변경 없음)" >> README.md
-            printf "%s\n" "$REND" >> README.md
-            printf "\n" >> README.md
-            printf "%s\n" "## 🗂️ 문제 목록 (자동 생성)" >> README.md
-            printf "%s\n" "$START" >> README.md
-            printf "%s\n" "_자동으로 생성됩니다. 문제 폴더만 추가하세요._" >> README.md
-            printf "%s\n" "$END" >> README.md
+            {
+              printf "%s\n" "# C Algorithm Study"
+              printf "\n"
+              printf "%s\n" "## 🆕 최근 업데이트 (자동)"
+              printf "%s\n" "$RSTART"
+              printf "%s\n" "- (최근 변경 없음)"
+              printf "%s\n" "$REND"
+              printf "\n"
+              printf "%s\n" "## 🗂️ 문제 목록 (자동 생성)"
+              printf "%s\n" "$START"
+              printf "%s\n" "_자동으로 생성됩니다. 문제 폴더만 추가하세요._"
+              printf "%s\n" "$END"
+            } > README.md
           fi
 
-          # 마커 확인
-          grep -q "$START" README.md
-          grep -q "$END" README.md
-          grep -q "$RSTART" README.md
-          grep -q "$REND" README.md
+          # === 마커 보정: 없으면 추가 ===
+          if ! grep -qF "$RSTART" README.md; then
+            printf "\n## 🆕 최근 업데이트 (자동)\n%s\n- (최근 변경 없음)\n%s\n" "$RSTART" "$REND" >> README.md
+          fi
+          if ! grep -qF "$REND" README.md; then
+            echo "$REND" >> README.md
+          fi
 
-          # 최근 업데이트 치환
-          awk -v s="$RSTART" -v e="$REND" 'BEGIN{p=1}
-            $0 ~ s {print; system("cat _RECENT.md"); p=0; next}
-            $0 ~ e {p=1}
-            p {print}
+          if ! grep -qF "$START" README.md; then
+            printf "\n## 🗂️ 문제 목록 (자동 생성)\n%s\n_자동으로 생성됩니다. 문제 폴더만 추가하세요._\n%s\n" "$START" "$END" >> README.md
+          fi
+          if ! grep -qF "$END" README.md; then
+            echo "$END" >> README.md
+          fi
+
+          # === 최근 업데이트 치환 ===
+          awk -v s="$RSTART" -v e="$REND" '
+            BEGIN{p=1}
+            $0 ~ s { print; system("cat _RECENT.md"); p=0; next }
+            $0 ~ e { p=1 }
+            p { print }
           ' README.md > README.tmp && mv README.tmp README.md
 
-          # 문제 인덱스 치환
-          awk -v s="$START" -v e="$END" 'BEGIN{p=1}
-            $0 ~ s {print; system("cat _AUTO_INDEX.md"); p=0; next}
-            $0 ~ e {p=1}
-            p {print}
-          ' README.md > README.new
+          # === 문제 인덱스 치환 ===
+          awk -v s="$START" -v e="$END" '
+            BEGIN{p=1}
+            $0 ~ s { print; system("cat _AUTO_INDEX.md"); p=0; next }
+            $0 ~ e { p=1 }
+            p { print }
+          ' README.md > README.new && mv README.new README.md
 
-          mv README.new README.md
+          # 임시 파일 정리
           rm -f _AUTO_INDEX.md _RECENT.md
 
       - name: Commit & push if changed
