@@ -1,4 +1,13 @@
-name: Auto update README index (grouped raw/clean)
+
+---
+
+## 2) 워크플로(`.github/workflows/auto-readme.yml`) 업그레이드
+
+> 기존 파일을 아래로 **통째로 교체**하세요.  
+> (SWEA + “최근 업데이트” 자동 섹션 + 접기/필터는 README 쪽에서 처리됩니다)
+
+```yaml
+name: Auto update README index (grouped raw/clean + recent)
 
 on:
   push:
@@ -33,9 +42,9 @@ jobs:
           set -euo pipefail
 
           echo "[DEBUG] Listing directories for BOJ/PGS/SWEA..."
-          find baekjoon   -maxdepth 3 -print 2>/dev/null || true
+          find baekjoon    -maxdepth 3 -print 2>/dev/null || true
           find programmers -maxdepth 3 -print 2>/dev/null || true
-          find swea       -maxdepth 3 -print 2>/dev/null || true
+          find swea        -maxdepth 3 -print 2>/dev/null || true
 
           link_if() {
             # $1 = path, $2 = label
@@ -52,23 +61,20 @@ jobs:
             while IFS= read -r d; do
               tier="$(echo "$d" | awk -F/ '{print $2}')"
               prob="$(basename "$d")"
-
               local raw_link clean_link note_link out dot
               raw_link="$(link_if "$d/raw.c" raw || true)"
               clean_link="$(link_if "$d/clean.c" clean || true)"
               note_link="$(link_if "$d/note.md" note || true)"
               out=""; dot=""
-
-              if [ -n "$raw_link"  ]; then out="$raw_link";           dot=" • "; fi
-              if [ -n "$clean_link"]; then out="${out}${dot}$clean_link"; dot=" • "; fi
-              if [ -n "$note_link" ]; then out="${out}${dot}$note_link"; fi
-
+              [ -n "$raw_link" ]  && { out="$raw_link";           dot=" • "; }
+              [ -n "$clean_link" ]&& { out="${out}${dot}$clean_link"; dot=" • "; }
+              [ -n "$note_link" ] && { out="${out}${dot}$note_link"; }
               pretty_tier="$(echo "$tier" | sed 's/_/ /g')" # Bronze_III -> Bronze III
               printf -- "- **[%s](%s)** _(Tier: %s)_ — %s\n" "$prob" "$d" "$pretty_tier" "${out:-없음}"
               found=1
             done < <(find baekjoon -type d -mindepth 2 -maxdepth 2 | sort)
 
-            # 단일 파일형도 함께 지원: baekjoon/<Tier>/*.c
+            # 단일 파일형도 지원: baekjoon/<Tier>/*.c
             while IFS= read -r f; do
               tier="$(echo "$f" | awk -F/ '{print $2}')"
               pretty_tier="$(echo "$tier" | sed 's/_/ /g')"
@@ -85,27 +91,22 @@ jobs:
             [ -d programmers ] || return 0
             echo "## Programmers"
             local found=0
-            # 폴더형: programmers/LevelX/<문제폴더>/{raw.c,clean.c,note.md}
             while IFS= read -r d; do
               level="$(echo "$d" | awk -F/ '{print $2}')"
               title="$(basename "$d")"
-
               local raw_link clean_link note_link out dot
               raw_link="$(link_if "$d/raw.c" raw || true)"
               clean_link="$(link_if "$d/clean.c" clean || true)"
               note_link="$(link_if "$d/note.md" note || true)"
               out=""; dot=""
-
-              if [ -n "$raw_link"  ]; then out="$raw_link";           dot=" • "; fi
-              if [ -n "$clean_link"]; then out="${out}${dot}$clean_link"; dot=" • "; fi
-              if [ -n "$note_link" ]; then out="${out}${dot}$note_link"; fi
-
+              [ -n "$raw_link" ]  && { out="$raw_link";           dot=" • "; }
+              [ -n "$clean_link" ]&& { out="${out}${dot}$clean_link"; dot=" • "; }
+              [ -n "$note_link" ] && { out="${out}${dot}$note_link"; }
               pretty_level="$(echo "$level" | sed 's/Level//')"
               printf -- "- **[%s](%s)** _(Level: %s)_ — %s\n" "$title" "$d" "$pretty_level" "${out:-없음}"
               found=1
             done < <(find programmers -type d -mindepth 2 -maxdepth 2 | sort)
 
-            # 단일 파일형도 함께 지원: programmers/LevelX/*.c
             while IFS= read -r f; do
               level="$(echo "$f" | awk -F/ '{print $2}')"
               pretty_level="$(echo "$level" | sed 's/Level//')"
@@ -122,27 +123,22 @@ jobs:
             [ -d swea ] || return 0
             echo "## SW Expert Academy"
             local found=0
-            # 권장 구조: swea/D3/<문제폴더>/{raw.c,clean.c,note.md}
-            #  - 레벨명: D1, D2, D3, D4, D5, D6 등
+            # 권장: swea/D3/<문제폴더>/{raw.c,clean.c,note.md}
             while IFS= read -r d; do
               level="$(echo "$d" | awk -F/ '{print $2}')"  # D1/D2/...
               title="$(basename "$d")"
-
               local raw_link clean_link note_link out dot
               raw_link="$(link_if "$d/raw.c" raw || true)"
               clean_link="$(link_if "$d/clean.c" clean || true)"
               note_link="$(link_if "$d/note.md" note || true)"
               out=""; dot=""
-
-              if [ -n "$raw_link"  ]; then out="$raw_link";           dot=" • "; fi
-              if [ -n "$clean_link"]; then out="${out}${dot}$clean_link"; dot=" • "; fi
-              if [ -n "$note_link" ]; then out="${out}${dot}$note_link"; fi
-
+              [ -n "$raw_link" ]  && { out="$raw_link";           dot=" • "; }
+              [ -n "$clean_link" ]&& { out="${out}${dot}$clean_link"; dot=" • "; }
+              [ -n "$note_link" ] && { out="${out}${dot}$note_link"; }
               printf -- "- **[%s](%s)** _(Level: %s)_ — %s\n" "$title" "$d" "$level" "${out:-없음}"
               found=1
             done < <(find swea -type d -mindepth 2 -maxdepth 2 | sort)
 
-            # 단일 파일형도 함께 지원: swea/D3/*.c
             while IFS= read -r f; do
               level="$(echo "$f" | awk -F/ '{print $2}')"
               name="$(basename "$f")"
@@ -163,6 +159,19 @@ jobs:
           echo "=== _AUTO_INDEX.md ==="
           cat _AUTO_INDEX.md
 
+      - name: Generate recent commits (last 10)
+        shell: bash
+        run: |
+          set -euo pipefail
+          REPO_URL="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY}"
+          # baekjoon/programmers/swea 하위 변경만 집계
+          git log --date=short --pretty=format:'- %ad · %s ([%h]('"$REPO_URL"'/commit/%H))' -n 10 -- baekjoon programmers swea > _RECENT.md || true
+          if [ ! -s _RECENT.md ]; then
+            echo "- (최근 변경 없음)" > _RECENT.md
+          fi
+          echo "=== _RECENT.md ==="
+          cat _RECENT.md
+
       - name: Update README between markers
         shell: bash
         run: |
@@ -170,25 +179,38 @@ jobs:
 
           START="<!-- AUTO-INDEX:START -->"
           END="<!-- AUTO-INDEX:END -->"
+          RSTART="<!-- RECENT:START -->"
+          REND="<!-- RECENT:END -->"
 
           # README 없으면 기본 골격 생성
           if [ ! -f README.md ]; then
             printf "%s\n" "# C Algorithm Study" > README.md
             printf "\n" >> README.md
-            printf "%s\n" "## 📚 문제 목록 (자동 생성)" >> README.md
+            printf "%s\n" "## 🆕 최근 업데이트 (자동)" >> README.md
+            printf "%s\n" "$RSTART" >> README.md
+            printf "%s\n" "- (최근 변경 없음)" >> README.md
+            printf "%s\n" "$REND" >> README.md
             printf "\n" >> README.md
+            printf "%s\n" "## 🗂️ 문제 목록 (자동 생성)" >> README.md
             printf "%s\n" "$START" >> README.md
-            printf "\n" >> README.md
             printf "%s\n" "_자동으로 생성됩니다. 문제 폴더만 추가하세요._" >> README.md
-            printf "\n" >> README.md
             printf "%s\n" "$END" >> README.md
           fi
 
           # 마커 확인
           grep -q "$START" README.md
           grep -q "$END" README.md
+          grep -q "$RSTART" README.md
+          grep -q "$REND" README.md
 
-          # 마커 사이를 _AUTO_INDEX.md로 치환
+          # 최근 업데이트 치환
+          awk -v s="$RSTART" -v e="$REND" 'BEGIN{p=1}
+            $0 ~ s {print; system("cat _RECENT.md"); p=0; next}
+            $0 ~ e {p=1}
+            p {print}
+          ' README.md > README.tmp && mv README.tmp README.md
+
+          # 문제 인덱스 치환
           awk -v s="$START" -v e="$END" 'BEGIN{p=1}
             $0 ~ s {print; system("cat _AUTO_INDEX.md"); p=0; next}
             $0 ~ e {p=1}
@@ -196,7 +218,7 @@ jobs:
           ' README.md > README.new
 
           mv README.new README.md
-          rm -f _AUTO_INDEX.md
+          rm -f _AUTO_INDEX.md _RECENT.md
 
       - name: Commit & push if changed
         shell: bash
@@ -209,5 +231,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "docs(readme): auto-update grouped index"
+          git commit -m "docs(readme): auto-update grouped index & recent commits"
           git push
