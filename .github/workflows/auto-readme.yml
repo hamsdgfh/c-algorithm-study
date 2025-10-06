@@ -27,7 +27,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate grouped index (collapsible + robust sort)
+      - name: Generate grouped index (collapsible; no pipe to sort)
         shell: bash
         run: |
           set -euo pipefail
@@ -43,41 +43,57 @@ jobs:
             fi
           }
 
+          # 정렬을 임시파일로 처리해 파이프를 제거
+          sorted_to_file() { # $1: command string -> writes sorted lines to a tmp file, prints tmp path
+            local _tmp; _tmp="$(mktemp)"
+            # shellcheck disable=SC2086
+            bash -lc "$1" | LC_ALL=C sort > \"$_tmp\" 2>/dev/null || true
+            echo "$_tmp"
+          }
+
           # 인덱스에 포함할 단일 파일 확장자 (필요시 추가/삭제)
           EXTS='\( -name "*.c" -o -name "*.cpp" -o -name "*.cc" -o -name "*.py" -o -name "*.java" -o -name "*.js" -o -name "*.ts" -o -name "*.kt" -o -name "*.rs" -o -name "*.go" \)'
 
           list_grouped() {
             local ROOT=$1    # baekjoon / programmers / swea
             local LABEL=$2   # Baekjoon / Programmers / SW Expert Academy
-            local PREFIX=$3  # Tier/Level 표기용 텍스트(표기만, 로직엔 영향 없음)
 
             [ -d "$ROOT" ] || { echo "## $LABEL"; echo "- (아직 없음)"; echo; return 0; }
             echo "## $LABEL"
 
-            # 그룹(티어/레벨) 목록 수집: 디렉토리와 파일 경로 양쪽에서 2번째 세그먼트를 모아 유니크 정렬
-            mapfile -t GROUPS  < <(find "$ROOT" -type d -mindepth 2 -maxdepth 3 -printf '%P\n' 2>/dev/null | awk -F/ 'NF>=2{print $1}' | LC_ALL=C sort -u || true)
-            mapfile -t GROUPS2 < <(find "$ROOT" -type f -mindepth 1 -maxdepth 3                    2>/dev/null | awk -F/ 'NF>=2{print $2}' | LC_ALL=C sort -u || true)
-            GROUPS=($(printf "%s\n" "${GROUPS[@]}" "${GROUPS2[@]}" | sed '/^$/d' | LC_ALL=C sort -u || true))
+            # 그룹(티어/레벨) 목록 수집
+            local tmp1 tmp2
+            tmp1="$(sorted_to_file "find \"$ROOT\" -type d -mindepth 2 -maxdepth 3 -printf '%P\n' 2>/dev/null | awk -F/ 'NF>=2{print \$1}'")"
+            tmp2="$(sorted_to_file "find \"$ROOT\" -type f -mindepth 1 -maxdepth 3 2>/dev/null | awk -F/ 'NF>=2{print \$2}'")"
 
-            if [ "${#GROUPS[@]}" -eq 0 ]; then
+            # 병합 유니크
+            local tmp_groups; tmp_groups="$(mktemp)"
+            cat "$tmp1" "$tmp2" 2>/dev/null | sed '/^$/d' | LC_ALL=C sort -u > "$tmp_groups" || true
+            rm -f "$tmp1" "$tmp2"
+
+            if ! [ -s "$tmp_groups" ]; then
               echo "- (아직 없음)"
               echo
+              rm -f "$tmp_groups"
               return 0
             fi
 
-            for g in "${GROUPS[@]}"; do
-              # 그룹 내 항목 수
+            while IFS= read -r g; do
+              [ -z "${g:-}" ] && continue
+
+              # 항목수 집계
+              local count
               count=$(
                 { find "$ROOT/$g" -type d -mindepth 1 -maxdepth 2 2>/dev/null; \
                   eval find "$ROOT/$g" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null; } \
                 | wc -l | tr -d ' '
               )
 
-              # 접기 시작
               echo "<details><summary><strong>${g}</strong> <sub>(${count})</sub></summary>"
               echo
 
-              # 폴더형 문제들: ROOT/g/<문제> 또는 ROOT/g/<분류>/<문제>
+              # 폴더형 목록
+              local tmp_dirs; tmp_dirs="$(sorted_to_file "find \"$ROOT/$g\" -type d -mindepth 1 -maxdepth 2 2>/dev/null")"
               while IFS= read -r d; do
                 [ -z "${d:-}" ] && continue
                 title="$(basename "$d")"
@@ -89,25 +105,29 @@ jobs:
                 [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
                 [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
                 printf -- "- **[%s](%s)** — %s\n" "$title" "$d" "${out:-없음}"
-              done < <(find "$ROOT/$g" -type d -mindepth 1 -maxdepth 2 2>/dev/null | LC_ALL=C sort || true)
+              done < "$tmp_dirs"
+              rm -f "$tmp_dirs"
 
-              # 단일 파일형: ROOT/g/*.<ext>
+              # 단일 파일형 목록
+              local tmp_files; tmp_files="$(sorted_to_file "eval find \"$ROOT/$g\" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null")"
               while IFS= read -r f; do
                 [ -z "${f:-}" ] && continue
                 name="$(basename "$f")"
                 printf -- "- [%s](%s)\n" "$name" "$f"
-              done < <(eval find "$ROOT/$g" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null | LC_ALL=C sort || true)
+              done < "$tmp_files"
+              rm -f "$tmp_files"
 
               echo
               echo "</details>"
               echo
-            done
+            done < "$tmp_groups"
+            rm -f "$tmp_groups"
           }
 
           {
-            list_grouped baekjoon "Baekjoon" "Tier"
-            list_grouped programmers "Programmers" "Level"
-            list_grouped swea "SW Expert Academy" "Level"
+            list_grouped baekjoon "Baekjoon"
+            list_grouped programmers "Programmers"
+            list_grouped swea "SW Expert Academy"
           } > _AUTO_INDEX.md
 
           echo "=== _AUTO_INDEX.md (preview top) ==="
@@ -118,7 +138,6 @@ jobs:
         run: |
           set -euo pipefail
           REPO_URL="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY}"
-          # 문제 폴더들만 집계
           git log --date=short --pretty=format:'- %ad · %s ([%h]('"$REPO_URL"'/commit/%H))' -n 10 -- baekjoon programmers swea > _RECENT.md || true
           if [ ! -s _RECENT.md ]; then
             echo "- (최근 변경 없음)" > _RECENT.md
@@ -136,7 +155,6 @@ jobs:
           RSTART="<!-- RECENT:START -->"
           REND="<!-- RECENT:END -->"
 
-          # 앞 단계에서 만든 파일을 덮어쓰지 않음
           [ -f _AUTO_INDEX.md ] || : > _AUTO_INDEX.md
           [ -f _RECENT.md ]     || : > _RECENT.md
 
@@ -215,5 +233,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "docs(readme): auto-index (collapsible) + quick filters + recent commits"
-          git push
+          g
