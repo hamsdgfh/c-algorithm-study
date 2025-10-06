@@ -2,7 +2,7 @@ name: Auto update README index (grouped raw/clean + recent)
 
 on:
   push:
-    branches: [ "main" ]    # 기본 브랜치명이 다르면 수정하세요 (예: master)
+    branches: [ "main" ]
     paths:
       - "baekjoon/**"
       - "programmers/**"
@@ -27,15 +27,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate grouped index
+      - name: Generate grouped index (collapsible by tier/level)
         shell: bash
         run: |
           set -euo pipefail
 
-          echo "[DEBUG] Listing directories for BOJ/PGS/SWEA..."
-          find baekjoon    -maxdepth 3 -print 2>/dev/null || true
-          find programmers -maxdepth 3 -print 2>/dev/null || true
-          find swea        -maxdepth 3 -print 2>/dev/null || true
+          echo "[DEBUG] Listing directories..."
+          find baekjoon    -maxdepth 4 -print 2>/dev/null || true
+          find programmers -maxdepth 4 -print 2>/dev/null || true
+          find swea        -maxdepth 4 -print 2>/dev/null || true
 
           link_if() {
             # $1 = path, $2 = label
@@ -44,100 +44,179 @@ jobs:
             fi
           }
 
+          # 확장자 집합(필요시 추가/삭제)
+          EXTS='\( -name "*.c" -o -name "*.cpp" -o -name "*.cc" -o -name "*.py" -o -name "*.java" -o -name "*.js" -o -name "*.ts" -o -name "*.kt" -o -name "*.rs" -o -name "*.go" \)'
+
           list_grouped_boj() {
             [ -d baekjoon ] || return 0
             echo "## Baekjoon"
-            local found=0
-            # 폴더형: baekjoon/<Tier>/<문제폴더>/{raw.c,clean.c,note.md}
-            while IFS= read -r d; do
-              tier="$(echo "$d" | awk -F/ '{print $2}')"
-              prob="$(basename "$d")"
-              local raw_link clean_link note_link out dot
-              raw_link="$(link_if "$d/raw.c" raw || true)"
-              clean_link="$(link_if "$d/clean.c" clean || true)"
-              note_link="$(link_if "$d/note.md" note || true)"
-              out=""; dot=""
-              [ -n "$raw_link" ]   && { out="$raw_link";             dot=" • "; }
-              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
-              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
-              pretty_tier="$(echo "$tier" | sed 's/_/ /g')" # Bronze_III -> Bronze III
-              printf -- "- **[%s](%s)** _(Tier: %s)_ — %s\n" "$prob" "$d" "$pretty_tier" "${out:-없음}"
-              found=1
-            done < <(find baekjoon -type d -mindepth 2 -maxdepth 2 | sort)
+            local any=0
 
-            # 단일 파일형도 지원: baekjoon/<Tier>/*.c
-            while IFS= read -r f; do
-              tier="$(echo "$f" | awk -F/ '{print $2}')"
+            # 고유 티어 목록
+            mapfile -t TIERS < <(find baekjoon -type d -mindepth 2 -maxdepth 3 -printf '%P\n' 2>/dev/null | awk -F/ 'NF>=2{print $1}' | sort -u)
+            # 단일 파일이지만 tier 폴더 바로 아래에 있는 경우도 카운트
+            mapfile -t TIERS2 < <(find baekjoon -type f -mindepth 1 -maxdepth 3 2>/dev/null | awk -F/ 'NF>=2{print $2}' | sort -u)
+            TIERS=($(printf "%s\n" "${TIERS[@]}" "${TIERS2[@]}" | sed '/^$/d' | sort -u))
+
+            if [ "${#TIERS[@]}" -eq 0 ]; then
+              echo "- (아직 없음)"
+              echo
+              return 0
+            fi
+
+            for tier in "${TIERS[@]}"; do
               pretty_tier="$(echo "$tier" | sed 's/_/ /g')"
-              name="$(basename "$f")"
-              printf -- "- [%s](%s) _(Tier: %s)_\n" "$name" "$f" "$pretty_tier"
-              found=1
-            done < <(find baekjoon -type f -mindepth 2 -maxdepth 2 -name '*.c' | sort)
 
-            [ "$found" -eq 1 ] || echo "- (아직 없음)"
+              # 항목 수 집계
+              count=$(
+                { find "baekjoon/$tier" -type d -mindepth 1 -maxdepth 2 2>/dev/null; \
+                  eval find "baekjoon/$tier" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null; } \
+                | wc -l | tr -d ' '
+              )
+
+              echo "<details><summary><strong>${pretty_tier}</strong> <sub>(${count})</sub></summary>"
+              echo
+
+              # 폴더형: baekjoon/<Tier>/<문제> or <Tier>/<분류>/<문제>
+              while IFS= read -r d; do
+                [ -z "$d" ] && continue
+                prob="$(basename "$d")"
+                raw_link="$(link_if "$d/raw.c" raw || true)"
+                clean_link="$(link_if "$d/clean.c" clean || true)"
+                note_link="$(link_if "$d/note.md" note || true)"
+                out=""; dot=""
+                [ -n "$raw_link" ]   && { out="$raw_link";              dot=" • "; }
+                [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
+                [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
+                printf -- "- **[%s](%s)** — %s\n" "$prob" "$d" "${out:-없음}"
+                any=1
+              done < <(find "baekjoon/$tier" -type d -mindepth 1 -maxdepth 2 2>/dev/null | sort)
+
+              # 단일 파일형: baekjoon/<Tier>/*.{c,cpp,py,...}
+              while IFS= read -r f; do
+                [ -z "$f" ] && continue
+                name="$(basename "$f")"
+                printf -- "- [%s](%s)\n" "$name" "$f"
+                any=1
+              done < <(eval find "baekjoon/$tier" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null | sort)
+
+              echo
+              echo "</details>"
+              echo
+            done
+
+            [ "$any" -eq 1 ] || echo "- (아직 없음)"
             echo
           }
 
           list_grouped_pgs() {
             [ -d programmers ] || return 0
             echo "## Programmers"
-            local found=0
-            while IFS= read -r d; do
-              level="$(echo "$d" | awk -F/ '{print $2}')"
-              title="$(basename "$d")"
-              local raw_link clean_link note_link out dot
-              raw_link="$(link_if "$d/raw.c" raw || true)"
-              clean_link="$(link_if "$d/clean.c" clean || true)"
-              note_link="$(link_if "$d/note.md" note || true)"
-              out=""; dot=""
-              [ -n "$raw_link" ]   && { out="$raw_link";             dot=" • "; }
-              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
-              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
-              pretty_level="$(echo "$level" | sed 's/Level//')"
-              printf -- "- **[%s](%s)** _(Level: %s)_ — %s\n" "$title" "$d" "$pretty_level" "${out:-없음}"
-              found=1
-            done < <(find programmers -type d -mindepth 2 -maxdepth 2 | sort)
+            local any=0
 
-            while IFS= read -r f; do
-              level="$(echo "$f" | awk -F/ '{print $2}')"
-              pretty_level="$(echo "$level" | sed 's/Level//')"
-              name="$(basename "$f")"
-              printf -- "- [%s](%s) _(Level: %s)_\n" "$name" "$f" "$pretty_level"
-              found=1
-            done < <(find programmers -type f -mindepth 2 -maxdepth 2 -name '*.c' | sort)
+            mapfile -t LEVELS < <(find programmers -type d -mindepth 2 -maxdepth 3 -printf '%P\n' 2>/dev/null | awk -F/ 'NF>=2{print $1}' | sort -u)
+            mapfile -t LEVELS2 < <(find programmers -type f -mindepth 1 -maxdepth 3 2>/dev/null | awk -F/ 'NF>=2{print $2}' | sort -u)
+            LEVELS=($(printf "%s\n" "${LEVELS[@]}" "${LEVELS2[@]}" | sed '/^$/d' | sort -u))
 
-            [ "$found" -eq 1 ] || echo "- (아직 없음)"
+            if [ "${#LEVELS[@]}" -eq 0 ]; then
+              echo "- (아직 없음)"
+              echo
+              return 0
+            fi
+
+            for level in "${LEVELS[@]}"; do
+              pretty_level="$(echo "$level" | sed -e 's/Level//I')"
+              count=$(
+                { find "programmers/$level" -type d -mindepth 1 -maxdepth 2 2>/dev/null; \
+                  eval find "programmers/$level" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null; } \
+                | wc -l | tr -d ' '
+              )
+
+              echo "<details><summary><strong>Level ${pretty_level}</strong> <sub>(${count})</sub></summary>"
+              echo
+
+              while IFS= read -r d; do
+                [ -z "$d" ] && continue
+                title="$(basename "$d")"
+                raw_link="$(link_if "$d/raw.c" raw || true)"
+                clean_link="$(link_if "$d/clean.c" clean || true)"
+                note_link="$(link_if "$d/note.md" note || true)"
+                out=""; dot=""
+                [ -n "$raw_link" ]   && { out="$raw_link";              dot=" • "; }
+                [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
+                [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
+                printf -- "- **[%s](%s)** — %s\n" "$title" "$d" "${out:-없음}"
+                any=1
+              done < <(find "programmers/$level" -type d -mindepth 1 -maxdepth 2 2>/dev/null | sort)
+
+              while IFS= read -r f; do
+                [ -z "$f" ] && continue
+                name="$(basename "$f")"
+                printf -- "- [%s](%s)\n" "$name" "$f"
+                any=1
+              done < <(eval find "programmers/$level" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null | sort)
+
+              echo
+              echo "</details>"
+              echo
+            done
+
+            [ "$any" -eq 1 ] || echo "- (아직 없음)"
             echo
           }
 
           list_grouped_swea() {
             [ -d swea ] || return 0
             echo "## SW Expert Academy"
-            local found=0
-            # 권장: swea/D3/<문제폴더>/{raw.c,clean.c,note.md}
-            while IFS= read -r d; do
-              level="$(echo "$d" | awk -F/ '{print $2}')"  # D1/D2/...
-              title="$(basename "$d")"
-              local raw_link clean_link note_link out dot
-              raw_link="$(link_if "$d/raw.c" raw || true)"
-              clean_link="$(link_if "$d/clean.c" clean || true)"
-              note_link="$(link_if "$d/note.md" note || true)"
-              out=""; dot=""
-              [ -n "$raw_link" ]   && { out="$raw_link";             dot=" • "; }
-              [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
-              [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
-              printf -- "- **[%s](%s)** _(Level: %s)_ — %s\n" "$title" "$d" "$level" "${out:-없음}"
-              found=1
-            done < <(find swea -type d -mindepth 2 -maxdepth 2 | sort)
+            local any=0
 
-            while IFS= read -r f; do
-              level="$(echo "$f" | awk -F/ '{print $2}')"
-              name="$(basename "$f")"
-              printf -- "- [%s](%s) _(Level: %s)_\n" "$name" "$f" "$level"
-              found=1
-            done < <(find swea -type f -mindepth 2 -maxdepth 2 -name '*.c' | sort)
+            mapfile -t LVLS < <(find swea -type d -mindepth 2 -maxdepth 3 -printf '%P\n' 2>/dev/null | awk -F/ 'NF>=2{print $1}' | sort -u)
+            mapfile -t LVLS2 < <(find swea -type f -mindepth 1 -maxdepth 3 2>/dev/null | awk -F/ 'NF>=2{print $2}' | sort -u)
+            LVLS=($(printf "%s\n" "${LVLS[@]}" "${LVLS2[@]}" | sed '/^$/d' | sort -u))
 
-            [ "$found" -eq 1 ] || echo "- (아직 없음)"
+            if [ "${#LVLS[@]}" -eq 0 ]; then
+              echo "- (아직 없음)"
+              echo
+              return 0
+            fi
+
+            for L in "${LVLS[@]}"; do
+              count=$(
+                { find "swea/$L" -type d -mindepth 1 -maxdepth 2 2>/dev/null; \
+                  eval find "swea/$L" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null; } \
+                | wc -l | tr -d ' '
+              )
+
+              echo "<details><summary><strong>${L}</strong> <sub>(${count})</sub></summary>"
+              echo
+
+              while IFS= read -r d; do
+                [ -z "$d" ] && continue
+                title="$(basename "$d")"
+                raw_link="$(link_if "$d/raw.c" raw || true)"
+                clean_link="$(link_if "$d/clean.c" clean || true)"
+                note_link="$(link_if "$d/note.md" note || true)"
+                out=""; dot=""
+                [ -n "$raw_link" ]   && { out="$raw_link";              dot=" • "; }
+                [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
+                [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
+                printf -- "- **[%s](%s)** — %s\n" "$title" "$d" "${out:-없음}"
+                any=1
+              done < <(find "swea/$L" -type d -mindepth 1 -maxdepth 2 2>/dev/null | sort)
+
+              while IFS= read -r f; do
+                [ -z "$f" ] && continue
+                name="$(basename "$f")"
+                printf -- "- [%s](%s)\n" "$name" "$f"
+                any=1
+              done < <(eval find "swea/$L" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null | sort)
+
+              echo
+              echo "</details>"
+              echo
+            done
+
+            [ "$any" -eq 1 ] || echo "- (아직 없음)"
             echo
           }
 
@@ -147,15 +226,14 @@ jobs:
             list_grouped_swea
           } > _AUTO_INDEX.md
 
-          echo "=== _AUTO_INDEX.md ==="
-          cat _AUTO_INDEX.md
+          echo "=== _AUTO_INDEX.md (preview) ==="
+          sed -n '1,120p' _AUTO_INDEX.md || true
 
       - name: Generate recent commits (last 10)
         shell: bash
         run: |
           set -euo pipefail
           REPO_URL="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY}"
-          # baekjoon/programmers/swea 하위 변경만 집계
           git log --date=short --pretty=format:'- %ad · %s ([%h]('"$REPO_URL"'/commit/%H))' -n 10 -- baekjoon programmers swea > _RECENT.md || true
           if [ ! -s _RECENT.md ]; then
             echo "- (최근 변경 없음)" > _RECENT.md
@@ -163,7 +241,7 @@ jobs:
           echo "=== _RECENT.md ==="
           cat _RECENT.md
 
-      - name: Update README between markers (robust)
+      - name: Update README between markers (robust + quick filters header)
         shell: bash
         run: |
           set -euo pipefail
@@ -173,14 +251,20 @@ jobs:
           RSTART="<!-- RECENT:START -->"
           REND="<!-- RECENT:END -->"
 
-          # 치환 소스 파일이 없더라도 실패하지 않도록 보장
           : > _AUTO_INDEX.md
           : > _RECENT.md
 
-          # README 없으면 기본 골격 생성
+          REPO_URL="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY}"
+
+          # README 없으면 기본 골격 + 상단 유틸 섹션 생성
           if [ ! -f README.md ]; then
             {
               printf "%s\n" "# C Algorithm Study"
+              printf "\n"
+              printf "%s\n" "### 🔎 Quick Filters & ⌨️ Shortcuts"
+              printf "%s\n" "- **검색 단축키**: \`/\` 검색 포커스, \`t\` 파일 탐색기, \`g\`→\`i\` 이슈로 이동"
+              printf "%s\n" "- **언어별 빠른 검색**: [C](%s/search?q=extension%%3Ac+path%%3Abaekjoon+OR+path%%3Aprogrammers+OR+path%%3Aswea) · [C++](%s/search?q=extension%%3Acpp) · [Python](%s/search?q=extension%%3Apy) · [Java](%s/search?q=extension%%3Ajava)" "$REPO_URL" "$REPO_URL" "$REPO_URL" "$REPO_URL"
+              printf "%s\n" "- **폴더별 빠른 검색**: [Baekjoon](%s/search?q=path%%3Abaekjoon) · [Programmers](%s/search?q=path%%3Aprogrammers) · [SWEA](%s/search?q=path%%3Aswea)" "$REPO_URL" "$REPO_URL" "$REPO_URL"
               printf "\n"
               printf "%s\n" "## 🆕 최근 업데이트 (자동)"
               printf "%s\n" "$RSTART"
@@ -189,21 +273,39 @@ jobs:
               printf "\n"
               printf "%s\n" "## 🗂️ 문제 목록 (자동 생성)"
               printf "%s\n" "$START"
-              printf "%s\n" "_자동으로 생성됩니다. 문제 폴더만 추가하세요._"
+              printf "%s\n" "_자동으로 생성됩니다. 티어/레벨별 접기 지원_"
               printf "%s\n" "$END"
             } > README.md
           fi
 
-          # === 마커 보정: 없으면 추가 ===
+          # 상단 Quick Filters & Shortcuts 블록 보장 (없으면 삽입)
+          if ! grep -q "Quick Filters & .*Shortcuts" README.md; then
+            tmp_head="$(mktemp)"
+            {
+              printf "%s\n" "### 🔎 Quick Filters & ⌨️ Shortcuts"
+              printf "%s\n" "- **검색 단축키**: \`/\` 검색 포커스, \`t\` 파일 탐색기, \`g\`→\`i\` 이슈로 이동"
+              printf "%s\n" "- **언어별 빠른 검색**: [C](%s/search?q=extension%%3Ac+path%%3Abaekjoon+OR+path%%3Aprogrammers+OR+path%%3Aswea) · [C++](%s/search?q=extension%%3Acpp) · [Python](%s/search?q=extension%%3Apy) · [Java](%s/search?q=extension%%3Ajava)" "$REPO_URL" "$REPO_URL" "$REPO_URL" "$REPO_URL"
+              printf "%s\n" "- **폴더별 빠른 검색**: [Baekjoon](%s/search?q=path%%3Abaekjoon) · [Programmers](%s/search?q=path%%3Aprogrammers) · [SWEA](%s/search?q=path%%3Aswea)" "$REPO_URL" "$REPO_URL" "$REPO_URL"
+              printf "\n"
+            } > "$tmp_head"
+            # 제목 바로 아래에 삽입
+            awk -v ins="$(sed 's/[&/\]/\\&/g' "$tmp_head")" '
+              NR==1{print;next}
+              NR==2{print ins}
+              {print}
+            ' README.md > README.tmp && mv README.tmp README.md
+            rm -f "$tmp_head"
+          fi
+
+          # === 마커 보정 ===
           if ! grep -qF "$RSTART" README.md; then
             printf "\n## 🆕 최근 업데이트 (자동)\n%s\n- (최근 변경 없음)\n%s\n" "$RSTART" "$REND" >> README.md
           fi
           if ! grep -qF "$REND" README.md; then
             echo "$REND" >> README.md
           fi
-
           if ! grep -qF "$START" README.md; then
-            printf "\n## 🗂️ 문제 목록 (자동 생성)\n%s\n_자동으로 생성됩니다. 문제 폴더만 추가하세요._\n%s\n" "$START" "$END" >> README.md
+            printf "\n## 🗂️ 문제 목록 (자동 생성)\n%s\n_자동으로 생성됩니다. 티어/레벨별 접기 지원_\n%s\n" "$START" "$END" >> README.md
           fi
           if ! grep -qF "$END" README.md; then
             echo "$END" >> README.md
@@ -217,7 +319,7 @@ jobs:
             p { print }
           ' README.md > README.tmp && mv README.tmp README.md
 
-          # === 문제 인덱스 치환 ===
+          # === 인덱스 치환(접힘 섹션 포함) ===
           awk -v s="$START" -v e="$END" '
             BEGIN{p=1}
             $0 ~ s { print; system("cat _AUTO_INDEX.md"); p=0; next }
@@ -225,7 +327,6 @@ jobs:
             p { print }
           ' README.md > README.new && mv README.new README.md
 
-          # 임시 파일 정리
           rm -f _AUTO_INDEX.md _RECENT.md
 
       - name: Commit & push if changed
@@ -239,5 +340,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "docs(readme): auto-update grouped index & recent commits"
+          git commit -m "docs(readme): auto-index with collapsible sections + quick filters + recent commits"
           git push
