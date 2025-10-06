@@ -1,4 +1,3 @@
-```yaml
 name: Auto update README index (grouped raw/clean + recent)
 
 on:
