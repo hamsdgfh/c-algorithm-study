@@ -27,7 +27,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate grouped index (collapsible by tier/level)
+      - name: Generate grouped index (collapsible + robust sort)
         shell: bash
         run: |
           set -euo pipefail
@@ -37,25 +37,27 @@ jobs:
           find programmers -maxdepth 4 -print 2>/dev/null || true
           find swea        -maxdepth 4 -print 2>/dev/null || true
 
-          link_if() {
+          link_if() { # $1 = path, $2 = label
             if [ -f "$1" ]; then
               printf '[%s](%s)' "$2" "$1"
             fi
           }
 
-          EXTS='\( -name "*.c" -o -name "*.cpp" -o -name "*.py" -o -name "*.java" \)'
+          # 인덱스에 포함할 단일 파일 확장자 (필요시 추가/삭제)
+          EXTS='\( -name "*.c" -o -name "*.cpp" -o -name "*.cc" -o -name "*.py" -o -name "*.java" -o -name "*.js" -o -name "*.ts" -o -name "*.kt" -o -name "*.rs" -o -name "*.go" \)'
 
           list_grouped() {
-            local ROOT=$1
-            local LABEL=$2
-            local KEYWORD=$3
+            local ROOT=$1    # baekjoon / programmers / swea
+            local LABEL=$2   # Baekjoon / Programmers / SW Expert Academy
+            local PREFIX=$3  # Tier/Level 표기용 텍스트(표기만, 로직엔 영향 없음)
 
-            [ -d "$ROOT" ] || return 0
+            [ -d "$ROOT" ] || { echo "## $LABEL"; echo "- (아직 없음)"; echo; return 0; }
             echo "## $LABEL"
 
-            mapfile -t GROUPS < <(find "$ROOT" -type d -mindepth 2 -maxdepth 3 -printf '%P\n' 2>/dev/null | awk -F/ 'NF>=2{print $1}' | sort -u)
-            mapfile -t GROUPS2 < <(find "$ROOT" -type f -mindepth 1 -maxdepth 3 2>/dev/null | awk -F/ 'NF>=2{print $2}' | sort -u)
-            GROUPS=($(printf "%s\n" "${GROUPS[@]}" "${GROUPS2[@]}" | sed '/^$/d' | sort -u))
+            # 그룹(티어/레벨) 목록 수집: 디렉토리와 파일 경로 양쪽에서 2번째 세그먼트를 모아 유니크 정렬
+            mapfile -t GROUPS  < <(find "$ROOT" -type d -mindepth 2 -maxdepth 3 -printf '%P\n' 2>/dev/null | awk -F/ 'NF>=2{print $1}' | LC_ALL=C sort -u || true)
+            mapfile -t GROUPS2 < <(find "$ROOT" -type f -mindepth 1 -maxdepth 3                    2>/dev/null | awk -F/ 'NF>=2{print $2}' | LC_ALL=C sort -u || true)
+            GROUPS=($(printf "%s\n" "${GROUPS[@]}" "${GROUPS2[@]}" | sed '/^$/d' | LC_ALL=C sort -u || true))
 
             if [ "${#GROUPS[@]}" -eq 0 ]; then
               echo "- (아직 없음)"
@@ -64,17 +66,20 @@ jobs:
             fi
 
             for g in "${GROUPS[@]}"; do
+              # 그룹 내 항목 수
               count=$(
                 { find "$ROOT/$g" -type d -mindepth 1 -maxdepth 2 2>/dev/null; \
                   eval find "$ROOT/$g" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null; } \
                 | wc -l | tr -d ' '
               )
 
+              # 접기 시작
               echo "<details><summary><strong>${g}</strong> <sub>(${count})</sub></summary>"
               echo
 
+              # 폴더형 문제들: ROOT/g/<문제> 또는 ROOT/g/<분류>/<문제>
               while IFS= read -r d; do
-                [ -z "$d" ] && continue
+                [ -z "${d:-}" ] && continue
                 title="$(basename "$d")"
                 raw_link="$(link_if "$d/raw.c" raw || true)"
                 clean_link="$(link_if "$d/clean.c" clean || true)"
@@ -84,13 +89,14 @@ jobs:
                 [ -n "$clean_link" ] && { out="${out}${dot}$clean_link"; dot=" • "; }
                 [ -n "$note_link" ]  && { out="${out}${dot}$note_link"; }
                 printf -- "- **[%s](%s)** — %s\n" "$title" "$d" "${out:-없음}"
-              done < <(find "$ROOT/$g" -type d -mindepth 1 -maxdepth 2 2>/dev/null | sort)
+              done < <(find "$ROOT/$g" -type d -mindepth 1 -maxdepth 2 2>/dev/null | LC_ALL=C sort || true)
 
+              # 단일 파일형: ROOT/g/*.<ext>
               while IFS= read -r f; do
-                [ -z "$f" ] && continue
+                [ -z "${f:-}" ] && continue
                 name="$(basename "$f")"
                 printf -- "- [%s](%s)\n" "$name" "$f"
-              done < <(eval find "$ROOT/$g" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null | sort)
+              done < <(eval find "$ROOT/$g" -type f -mindepth 0 -maxdepth 2 $EXTS 2>/dev/null | LC_ALL=C sort || true)
 
               echo
               echo "</details>"
@@ -104,18 +110,21 @@ jobs:
             list_grouped swea "SW Expert Academy" "Level"
           } > _AUTO_INDEX.md
 
-          echo "=== _AUTO_INDEX.md preview ==="
-          head -n 50 _AUTO_INDEX.md || true
+          echo "=== _AUTO_INDEX.md (preview top) ==="
+          sed -n '1,120p' _AUTO_INDEX.md || true
 
       - name: Generate recent commits (last 10)
         shell: bash
         run: |
           set -euo pipefail
           REPO_URL="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY}"
+          # 문제 폴더들만 집계
           git log --date=short --pretty=format:'- %ad · %s ([%h]('"$REPO_URL"'/commit/%H))' -n 10 -- baekjoon programmers swea > _RECENT.md || true
           if [ ! -s _RECENT.md ]; then
             echo "- (최근 변경 없음)" > _RECENT.md
           fi
+          echo "=== _RECENT.md ==="
+          cat _RECENT.md
 
       - name: Update README between markers (robust + quick filters header)
         shell: bash
@@ -127,11 +136,13 @@ jobs:
           RSTART="<!-- RECENT:START -->"
           REND="<!-- RECENT:END -->"
 
+          # 앞 단계에서 만든 파일을 덮어쓰지 않음
           [ -f _AUTO_INDEX.md ] || : > _AUTO_INDEX.md
           [ -f _RECENT.md ]     || : > _RECENT.md
 
           REPO_URL="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY}"
 
+          # README 기본 골격 + 상단 퀵 필터/단축키
           if [ ! -f README.md ]; then
             {
               printf "%s\n" "# C Algorithm Study"
@@ -153,13 +164,31 @@ jobs:
             } > README.md
           fi
 
-          # === 마커 보정 ===
+          # 상단 Quick Filters & Shortcuts 블록 없으면 삽입
+          if ! grep -q "Quick Filters & .*Shortcuts" README.md; then
+            tmp_head="$(mktemp)"
+            {
+              printf "%s\n" "### 🔎 Quick Filters & ⌨️ Shortcuts"
+              printf "%s\n" "- **검색 단축키**: \`/\` 검색 포커스, \`t\` 파일 탐색기, \`g\`→\`i\` 이슈로 이동"
+              printf "%s\n" "- **언어별 빠른 검색**: [C](%s/search?q=extension%%3Ac+path%%3Abaekjoon+OR+path%%3Aprogrammers+OR+path%%3Aswea) · [C++](%s/search?q=extension%%3Acpp) · [Python](%s/search?q=extension%%3Apy) · [Java](%s/search?q=extension%%3Ajava)" "$REPO_URL" "$REPO_URL" "$REPO_URL" "$REPO_URL"
+              printf "%s\n" "- **폴더별 빠른 검색**: [Baekjoon](%s/search?q=path%%3Abaekjoon) · [Programmers](%s/search?q=path%%3Aprogrammers) · [SWEA](%s/search?q=path%%3Aswea)" "$REPO_URL" "$REPO_URL" "$REPO_URL"
+              printf "\n"
+            } > "$tmp_head"
+            awk -v ins="$(sed 's/[&/\]/\\&/g' "$tmp_head")" '
+              NR==1{print;next}
+              NR==2{print ins}
+              {print}
+            ' README.md > README.tmp && mv README.tmp README.md
+            rm -f "$tmp_head"
+          fi
+
+          # 마커 보정
           grep -qF "$RSTART" README.md || printf "\n## 🆕 최근 업데이트 (자동)\n%s\n- (최근 변경 없음)\n%s\n" "$RSTART" "$REND" >> README.md
           grep -qF "$REND"   README.md || echo "$REND" >> README.md
           grep -qF "$START"  README.md || printf "\n## 🗂️ 문제 목록 (자동 생성)\n%s\n_자동으로 생성됩니다. 티어/레벨별 접기 지원_\n%s\n" "$START" "$END" >> README.md
           grep -qF "$END"    README.md || echo "$END" >> README.md
 
-          # === 최근 업데이트 치환 ===
+          # 최근 업데이트 치환
           awk -v s="$RSTART" -v e="$REND" '
             BEGIN{p=1}
             $0 ~ s { print; system("cat _RECENT.md"); p=0; next }
@@ -167,7 +196,7 @@ jobs:
             p { print }
           ' README.md > README.tmp && mv README.tmp README.md
 
-          # === 인덱스 치환 ===
+          # 인덱스 치환
           awk -v s="$START" -v e="$END" '
             BEGIN{p=1}
             $0 ~ s { print; system("cat _AUTO_INDEX.md"); p=0; next }
@@ -186,5 +215,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "docs(readme): auto-update grouped index & recent commits"
+          git commit -m "docs(readme): auto-index (collapsible) + quick filters + recent commits"
           git push
