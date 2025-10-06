@@ -20,5 +20,5 @@ int main() {
     }
     
     printf("%d", time);
-    return 0;
+    return 0; 
 }
