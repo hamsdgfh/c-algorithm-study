@@ -39,6 +39,7 @@
 - **[기능개발](programmers/Level2/기능개발)** _(Level: 2)_ — [raw](programmers/Level2/기능개발/raw.c)
 
 ## SW Expert Academy
+- **[2047_신문_헤드라인](swea/D1/2047_신문_헤드라인)** _(Level: D1)_ — [raw](swea/D1/2047_신문_헤드라인/raw.c)
 - **[2072_홀수만_더하기](swea/D1/2072_홀수만_더하기)** _(Level: D1)_ — [raw](swea/D1/2072_홀수만_더하기/raw.c)
 
 <!-- AUTO-INDEX:END -->
