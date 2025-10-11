@@ -1,3 +1,13 @@
+/*
+ * Platform : BOJ (백준)
+ * Problem  : 
+ * Tier     : 
+ * Link     : https://www.acmicpc.net/problem/2444
+ * Idea     : 
+ * Complex. : 
+ * Note     : 
+ */
+
 #include <stdio.h>
 
 int main() {
