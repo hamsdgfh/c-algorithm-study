@@ -1,3 +1,13 @@
+/*
+ * Platform : BOJ (백준)
+ * Problem  : 문자열
+ * Tier     : Bronze V
+ * Link     : https://www.acmicpc.net/problem/
+ * Idea     : 
+ * Complex. : 
+ * Note     : 
+ */
+
 #include <stdio.h>
 #include <string.h>
 
