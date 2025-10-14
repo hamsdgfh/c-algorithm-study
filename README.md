@@ -37,6 +37,7 @@
 - **[원소들의_곱과_합](programmers/Level0/원소들의_곱과_합)** _(Level: 0)_ — [raw](programmers/Level0/원소들의_곱과_합/raw.c)
 - **[접두사인지_확인하기](programmers/Level0/접두사인지_확인하기)** _(Level: 0)_ — [raw](programmers/Level0/접두사인지_확인하기/raw.c)
 - **[주사위게임2](programmers/Level0/주사위게임2)** _(Level: 0)_ — [raw](programmers/Level0/주사위게임2/raw.c)
+- **[특별한_이차원_배열_2](programmers/Level0/특별한_이차원_배열_2)** _(Level: 0)_ — [raw](programmers/Level0/특별한_이차원_배열_2/raw.c)
 - **[피자나눠먹기(1)](programmers/Level0/피자나눠먹기(1))** _(Level: 0)_ — [raw](programmers/Level0/피자나눠먹기(1)/raw.c) • [clean](programmers/Level0/피자나눠먹기(1)/clean.c) • [note](programmers/Level0/피자나눠먹기(1)/note.md)
 - **[홀짝_구분하기](programmers/Level0/홀짝_구분하기)** _(Level: 0)_ — [raw](programmers/Level0/홀짝_구분하기/raw.c)
 - **[기능개발](programmers/Level2/기능개발)** _(Level: 2)_ — [raw](programmers/Level2/기능개발/raw.c)
