@@ -12,7 +12,7 @@ int main(){
             if (p % 2 != 0)
                 sum += p;
         }
-        printf("#%d %d\n", i, sum);
+        printf("%d %d\n", i, sum);
     }
     return 0;
 }
