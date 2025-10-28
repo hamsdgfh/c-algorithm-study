@@ -25,6 +25,7 @@
 - **[27866_문자와_문자열](baekjoon/Bronze_V/27866_문자와_문자열)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/27866_문자와_문자열/raw.c)
 - **[9086_문자열](baekjoon/Bronze_V/9086_문자열)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/9086_문자열/raw.c)
 - **[25206_너의_평점은](baekjoon/Silver_V/25206_너의_평점은)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/25206_너의_평점은/raw.c)
+- **[2751_수_정렬하기_2](baekjoon/Silver_V/2751_수_정렬하기_2)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/2751_수_정렬하기_2/raw.c)
 - **[1598_꼬리를_무는_숫자_나열](baekjoon/없음/1598_꼬리를_무는_숫자_나열)** _(Tier: 없음)_ — [raw](baekjoon/없음/1598_꼬리를_무는_숫자_나열/raw.c)
 
 ## Programmers
