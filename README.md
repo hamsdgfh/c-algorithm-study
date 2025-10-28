@@ -34,6 +34,7 @@
 - **[뒤집힌_문자열](programmers/Level0/뒤집힌_문자열)** _(Level: 0)_ — [raw](programmers/Level0/뒤집힌_문자열/raw.c)
 - **[머쓱이보다_키_큰_사람](programmers/Level0/머쓱이보다_키_큰_사람)** _(Level: 0)_ — [raw](programmers/Level0/머쓱이보다_키_큰_사람/raw.c)
 - **[문자열_돌리기](programmers/Level0/문자열_돌리기)** _(Level: 0)_ — [raw](programmers/Level0/문자열_돌리기/raw.c)
+- **[문자열_정렬하기(2)](programmers/Level0/문자열_정렬하기(2))** _(Level: 0)_ — [raw](programmers/Level0/문자열_정렬하기(2)/raw.c)
 - **[문자열의_뒤의_n글자](programmers/Level0/문자열의_뒤의_n글자)** _(Level: 0)_ — [raw](programmers/Level0/문자열의_뒤의_n글자/raw.c)
 - **[문자열의_앞의_n글자](programmers/Level0/문자열의_앞의_n글자)** _(Level: 0)_ — [raw](programmers/Level0/문자열의_앞의_n글자/raw.c)
 - **[아이스_아메리카노](programmers/Level0/아이스_아메리카노)** _(Level: 0)_ — [raw](programmers/Level0/아이스_아메리카노/raw.c) • [note](programmers/Level0/아이스_아메리카노/note.md)
