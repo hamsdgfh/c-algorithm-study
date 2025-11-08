@@ -27,9 +27,9 @@
 - **[10814_나이순_정렬](baekjoon/Silver_V/10814_나이순_정렬)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/10814_나이순_정렬/raw.c) • [note](baekjoon/Silver_V/10814_나이순_정렬/note.md)
 - **[11650_좌표_정렬하기](baekjoon/Silver_V/11650_좌표_정렬하기)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/11650_좌표_정렬하기/raw.c) • [note](baekjoon/Silver_V/11650_좌표_정렬하기/note.md)
 - **[11651_좌표_정렬하기_2](baekjoon/Silver_V/11651_좌표_정렬하기_2)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/11651_좌표_정렬하기_2/raw.c)
+- **[1181_단어_정렬](baekjoon/Silver_V/1181_단어_정렬)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/1181_단어_정렬/raw.c)
 - **[25206_너의_평점은](baekjoon/Silver_V/25206_너의_평점은)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/25206_너의_평점은/raw.c)
 - **[2751_수_정렬하기_2](baekjoon/Silver_V/2751_수_정렬하기_2)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/2751_수_정렬하기_2/raw.c)
-- **[1181_단어_정렬](baekjoon/Sliver_V/1181_단어_정렬)** _(Tier: Sliver V)_ — [raw](baekjoon/Sliver_V/1181_단어_정렬/raw.c)
 - **[1598_꼬리를_무는_숫자_나열](baekjoon/없음/1598_꼬리를_무는_숫자_나열)** _(Tier: 없음)_ — [raw](baekjoon/없음/1598_꼬리를_무는_숫자_나열/raw.c)
 
 ## Programmers
