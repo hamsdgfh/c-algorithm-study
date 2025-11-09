@@ -58,5 +58,6 @@
 ## SW Expert Academy
 - **[2047_신문_헤드라인](swea/D1/2047_신문_헤드라인)** _(Level: D1)_ — [raw](swea/D1/2047_신문_헤드라인/raw.c)
 - **[2072_홀수만_더하기](swea/D1/2072_홀수만_더하기)** _(Level: D1)_ — [raw](swea/D1/2072_홀수만_더하기/raw.c)
+- **[숫자를_정렬하자](swea/D2/숫자를_정렬하자)** _(Level: D2)_ — [raw](swea/D2/숫자를_정렬하자/raw.c)
 
 <!-- AUTO-INDEX:END -->
