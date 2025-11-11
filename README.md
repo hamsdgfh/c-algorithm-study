@@ -24,6 +24,7 @@
 - **[10871_X보다_작은_수](baekjoon/Bronze_V/10871_X보다_작은_수)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10871_X보다_작은_수/raw.c) • [clean](baekjoon/Bronze_V/10871_X보다_작은_수/clean.c)
 - **[2438_별_찍기](baekjoon/Bronze_V/2438_별_찍기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2438_별_찍기/raw.c)
 - **[2739_구구단](baekjoon/Bronze_V/2739_구구단)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2739_구구단/raw.c)
+- **[27433_팩토리얼_2](baekjoon/Bronze_V/27433_팩토리얼_2)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/27433_팩토리얼_2/raw.c)
 - **[2743_단어_길이_재기](baekjoon/Bronze_V/2743_단어_길이_재기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2743_단어_길이_재기/raw.c)
 - **[27866_문자와_문자열](baekjoon/Bronze_V/27866_문자와_문자열)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/27866_문자와_문자열/raw.c)
 - **[9086_문자열](baekjoon/Bronze_V/9086_문자열)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/9086_문자열/raw.c)
