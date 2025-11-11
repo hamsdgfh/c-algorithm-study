@@ -10,6 +10,7 @@
 - **[2750_수_정렬하기](baekjoon/Bronze_II/2750_수_정렬하기)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/2750_수_정렬하기/raw.c)
 - **[5622_다이얼](baekjoon/Bronze_II/5622_다이얼)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/5622_다이얼/raw.c)
 - **[10810_공_넣기](baekjoon/Bronze_III/10810_공_넣기)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/10810_공_넣기/raw.c)
+- **[10872_팩토리얼](baekjoon/Bronze_III/10872_팩토리얼)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/10872_팩토리얼/raw.c)
 - **[10988_팰린드롬인지_확인하기](baekjoon/Bronze_III/10988_팰린드롬인지_확인하기)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/10988_팰린드롬인지_확인하기/raw.c)
 - **[11718_그대로_출력하기](baekjoon/Bronze_III/11718_그대로_출력하기)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/11718_그대로_출력하기/raw.c)
 - **[2444_별_찍기](baekjoon/Bronze_III/2444_별_찍기)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/2444_별_찍기/raw.c)
