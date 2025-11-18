@@ -12,7 +12,7 @@
 - **[25302_커트라인](baekjoon/Bronze_II/25302_커트라인)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/25302_커트라인/raw.c)
 - **[2587_대표값2](baekjoon/Bronze_II/2587_대표값2)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/2587_대표값2/raw.c)
 - **[2750_수_정렬하기](baekjoon/Bronze_II/2750_수_정렬하기)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/2750_수_정렬하기/raw.c)
-- **[2798_블랙잭](baekjoon/Bronze_II/2798_블랙잭)** _(Tier: Bronze II)_ — [note](baekjoon/Bronze_II/2798_블랙잭/note.md)
+- **[2798_블랙잭](baekjoon/Bronze_II/2798_블랙잭)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/2798_블랙잭/raw.c) • [note](baekjoon/Bronze_II/2798_블랙잭/note.md)
 - **[5622_다이얼](baekjoon/Bronze_II/5622_다이얼)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/5622_다이얼/raw.c)
 - **[10810_공_넣기](baekjoon/Bronze_III/10810_공_넣기)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/10810_공_넣기/raw.c)
 - **[10872_팩토리얼](baekjoon/Bronze_III/10872_팩토리얼)** _(Tier: Bronze III)_ — [raw](baekjoon/Bronze_III/10872_팩토리얼/raw.c)
