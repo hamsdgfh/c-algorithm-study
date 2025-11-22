@@ -30,6 +30,7 @@
 - **[1001_A-B](baekjoon/Bronze_V/1001_A-B)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/1001_A-B/raw.c)
 - **[10871_X보다_작은_수](baekjoon/Bronze_V/10871_X보다_작은_수)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10871_X보다_작은_수/raw.c) • [clean](baekjoon/Bronze_V/10871_X보다_작은_수/clean.c)
 - **[10950_A+B-3](baekjoon/Bronze_V/10950_A+B-3)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10950_A+B-3/raw.c)
+- **[10998_AxB](baekjoon/Bronze_V/10998_AxB)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10998_AxB/raw.c)
 - **[1330_두_수_비교하기](baekjoon/Bronze_V/1330_두_수_비교하기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/1330_두_수_비교하기/raw.c)
 - **[14681_사분면_고르기](baekjoon/Bronze_V/14681_사분면_고르기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/14681_사분면_고르기/raw.c)
 - **[2438_별_찍기](baekjoon/Bronze_V/2438_별_찍기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2438_별_찍기/raw.c)
