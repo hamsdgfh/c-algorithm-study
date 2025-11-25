@@ -28,6 +28,7 @@
 - **[25304_영수증](baekjoon/Bronze_IV/25304_영수증)** _(Tier: Bronze IV)_ — [raw](baekjoon/Bronze_IV/25304_영수증/raw.c) • [clean](baekjoon/Bronze_IV/25304_영수증/clean.c)
 - **[1000_A+B](baekjoon/Bronze_V/1000_A+B)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/1000_A+B/raw.c)
 - **[1001_A-B](baekjoon/Bronze_V/1001_A-B)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/1001_A-B/raw.c)
+- **[1008_AB](baekjoon/Bronze_V/1008_AB)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/1008_AB/raw.c)
 - **[10871_X보다_작은_수](baekjoon/Bronze_V/10871_X보다_작은_수)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10871_X보다_작은_수/raw.c) • [clean](baekjoon/Bronze_V/10871_X보다_작은_수/clean.c)
 - **[10950_A+B-3](baekjoon/Bronze_V/10950_A+B-3)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10950_A+B-3/raw.c)
 - **[10998_AxB](baekjoon/Bronze_V/10998_AxB)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10998_AxB/raw.c)
