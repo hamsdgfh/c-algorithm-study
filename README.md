@@ -34,6 +34,7 @@
 - **[10926_??!](baekjoon/Bronze_V/10926_??!)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10926_??!/raw.c)
 - **[10950_A+B-3](baekjoon/Bronze_V/10950_A+B-3)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10950_A+B-3/raw.c)
 - **[10998_AxB](baekjoon/Bronze_V/10998_AxB)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10998_AxB/raw.c)
+- **[11382_꼬마_정민](baekjoon/Bronze_V/11382_꼬마_정민)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/11382_꼬마_정민/raw.c)
 - **[1330_두_수_비교하기](baekjoon/Bronze_V/1330_두_수_비교하기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/1330_두_수_비교하기/raw.c)
 - **[14681_사분면_고르기](baekjoon/Bronze_V/14681_사분면_고르기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/14681_사분면_고르기/raw.c)
 - **[18108_1998년생인_내가_태국에서는_2541년생?!](baekjoon/Bronze_V/18108_1998년생인_내가_태국에서는_2541년생?!)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/18108_1998년생인_내가_태국에서는_2541년생?!/raw.c)
