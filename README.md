@@ -30,6 +30,7 @@
 - **[1001_A-B](baekjoon/Bronze_V/1001_A-B)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/1001_A-B/raw.c)
 - **[1008_AB](baekjoon/Bronze_V/1008_AB)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/1008_AB/raw.c)
 - **[10171_고양이](baekjoon/Bronze_V/10171_고양이)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10171_고양이/raw.c)
+- **[10172_](baekjoon/Bronze_V/10172_)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10172_/raw.c)
 - **[10430_나머지](baekjoon/Bronze_V/10430_나머지)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10430_나머지/raw.c)
 - **[10871_X보다_작은_수](baekjoon/Bronze_V/10871_X보다_작은_수)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10871_X보다_작은_수/raw.c) • [clean](baekjoon/Bronze_V/10871_X보다_작은_수/clean.c)
 - **[10926_??!](baekjoon/Bronze_V/10926_??!)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/10926_??!/raw.c)
