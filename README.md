@@ -46,6 +46,7 @@
 - **[2743_단어_길이_재기](baekjoon/Bronze_V/2743_단어_길이_재기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2743_단어_길이_재기/raw.c)
 - **[2753_윤년](baekjoon/Bronze_V/2753_윤년)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2753_윤년/raw.c)
 - **[27866_문자와_문자열](baekjoon/Bronze_V/27866_문자와_문자열)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/27866_문자와_문자열/raw.c)
+- **[8393_합](baekjoon/Bronze_V/8393_합)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/8393_합/raw.c)
 - **[9086_문자열](baekjoon/Bronze_V/9086_문자열)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/9086_문자열/raw.c)
 - **[11399_ATM](baekjoon/Silver_IV/11399_ATM)** _(Tier: Silver IV)_ — [raw](baekjoon/Silver_IV/11399_ATM/raw.c)
 - **[2839_설탕_배달](baekjoon/Silver_IV/2839_설탕_배달)** _(Tier: Silver IV)_ — [raw](baekjoon/Silver_IV/2839_설탕_배달/raw.c) • [note](baekjoon/Silver_IV/2839_설탕_배달/note.md)
