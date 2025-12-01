@@ -39,6 +39,7 @@
 - **[11382_꼬마_정민](baekjoon/Bronze_V/11382_꼬마_정민)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/11382_꼬마_정민/raw.c)
 - **[1330_두_수_비교하기](baekjoon/Bronze_V/1330_두_수_비교하기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/1330_두_수_비교하기/raw.c)
 - **[14681_사분면_고르기](baekjoon/Bronze_V/14681_사분면_고르기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/14681_사분면_고르기/raw.c)
+- **[15552_빠른_A+B](baekjoon/Bronze_V/15552_빠른_A+B)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/15552_빠른_A+B/raw.c)
 - **[18108_1998년생인_내가_태국에서는_2541년생?!](baekjoon/Bronze_V/18108_1998년생인_내가_태국에서는_2541년생?!)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/18108_1998년생인_내가_태국에서는_2541년생?!/raw.c)
 - **[2438_별_찍기](baekjoon/Bronze_V/2438_별_찍기)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/2438_별_찍기/raw.c)
 - **[25314_코딩은_체육과목_입니다](baekjoon/Bronze_V/25314_코딩은_체육과목_입니다)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/25314_코딩은_체육과목_입니다/raw.c)
