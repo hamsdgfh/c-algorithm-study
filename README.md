@@ -53,7 +53,7 @@
 - **[8393_합](baekjoon/Bronze_V/8393_합)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/8393_합/raw.c)
 - **[9086_문자열](baekjoon/Bronze_V/9086_문자열)** _(Tier: Bronze V)_ — [raw](baekjoon/Bronze_V/9086_문자열/raw.c)
 - **[11399_ATM](baekjoon/Silver_IV/11399_ATM)** _(Tier: Silver IV)_ — [raw](baekjoon/Silver_IV/11399_ATM/raw.c)
-- **[2003_수들의_합_2](baekjoon/Silver_IV/2003_수들의_합_2)** _(Tier: Silver IV)_ — [note](baekjoon/Silver_IV/2003_수들의_합_2/note.md)
+- **[2003_수들의_합_2](baekjoon/Silver_IV/2003_수들의_합_2)** _(Tier: Silver IV)_ — [raw](baekjoon/Silver_IV/2003_수들의_합_2/raw.c) • [note](baekjoon/Silver_IV/2003_수들의_합_2/note.md)
 - **[2839_설탕_배달](baekjoon/Silver_IV/2839_설탕_배달)** _(Tier: Silver IV)_ — [raw](baekjoon/Silver_IV/2839_설탕_배달/raw.c) • [note](baekjoon/Silver_IV/2839_설탕_배달/note.md)
 - **[10814_나이순_정렬](baekjoon/Silver_V/10814_나이순_정렬)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/10814_나이순_정렬/raw.c) • [note](baekjoon/Silver_V/10814_나이순_정렬/note.md)
 - **[11650_좌표_정렬하기](baekjoon/Silver_V/11650_좌표_정렬하기)** _(Tier: Silver V)_ — [raw](baekjoon/Silver_V/11650_좌표_정렬하기/raw.c) • [note](baekjoon/Silver_V/11650_좌표_정렬하기/note.md)
