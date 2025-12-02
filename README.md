@@ -4,6 +4,7 @@
 ## 🗂️ 문제 목록 (자동 생성)
 <!-- AUTO-INDEX:START -->
 ## Baekjoon
+- **[11655_ROT13](baekjoon/Bronze_I/11655_ROT13)** _(Tier: Bronze I)_ — [raw](baekjoon/Bronze_I/11655_ROT13/raw.c)
 - **[2609_최대공약수와_최소공배](baekjoon/Bronze_I/2609_최대공약수와_최소공배)** _(Tier: Bronze I)_ — [raw](baekjoon/Bronze_I/2609_최대공약수와_최소공배/raw.c)
 - **[10174_팰린드롬](baekjoon/Bronze_II/10174_팰린드롬)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/10174_팰린드롬/raw.c) • [clean](baekjoon/Bronze_II/10174_팰린드롬/clean.c)
 - **[10811_바구니_뒤집기](baekjoon/Bronze_II/10811_바구니_뒤집기)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/10811_바구니_뒤집기/raw.c)
