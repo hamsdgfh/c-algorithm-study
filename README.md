@@ -6,6 +6,7 @@
 ## Baekjoon
 - **[11655_ROT13](baekjoon/Bronze_I/11655_ROT13)** _(Tier: Bronze I)_ — [raw](baekjoon/Bronze_I/11655_ROT13/raw.c)
 - **[2609_최대공약수와_최소공배](baekjoon/Bronze_I/2609_최대공약수와_최소공배)** _(Tier: Bronze I)_ — [raw](baekjoon/Bronze_I/2609_최대공약수와_최소공배/raw.c)
+- **[2748_피보나치수](baekjoon/Bronze_I/2748_피보나치수)** _(Tier: Bronze I)_ — [raw](baekjoon/Bronze_I/2748_피보나치수/raw.c)
 - **[10174_팰린드롬](baekjoon/Bronze_II/10174_팰린드롬)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/10174_팰린드롬/raw.c) • [clean](baekjoon/Bronze_II/10174_팰린드롬/clean.c)
 - **[10811_바구니_뒤집기](baekjoon/Bronze_II/10811_바구니_뒤집기)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/10811_바구니_뒤집기/raw.c)
 - **[10870_피보나치_수_5](baekjoon/Bronze_II/10870_피보나치_수_5)** _(Tier: Bronze II)_ — [raw](baekjoon/Bronze_II/10870_피보나치_수_5/raw.c)
